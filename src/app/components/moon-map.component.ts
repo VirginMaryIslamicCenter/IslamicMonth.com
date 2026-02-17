@@ -30,10 +30,10 @@ export class MoonMapComponent {
   private readonly CANVAS_HEIGHT = 900;
 
   private readonly COLORS: Record<VisibilityCategory, string> = {
-    [VisibilityCategory.EASILY_VISIBLE]: 'rgba(50, 220, 120, 0.38)',
-    [VisibilityCategory.VISIBLE_PERFECT_CONDITIONS]: 'rgba(255, 225, 50, 0.35)',
-    [VisibilityCategory.OPTICAL_AID_TO_FIND]: 'rgba(255, 165, 50, 0.35)',
-    [VisibilityCategory.OPTICAL_AID_ONLY]: 'rgba(255, 90, 70, 0.32)',
+    [VisibilityCategory.EASILY_VISIBLE]: 'rgba(40, 220, 100, 0.55)',
+    [VisibilityCategory.VISIBLE_PERFECT_CONDITIONS]: 'rgba(255, 220, 30, 0.50)',
+    [VisibilityCategory.OPTICAL_AID_TO_FIND]: 'rgba(255, 150, 30, 0.50)',
+    [VisibilityCategory.OPTICAL_AID_ONLY]: 'rgba(255, 70, 50, 0.48)',
     [VisibilityCategory.NOT_VISIBLE]: 'rgba(0, 0, 0, 0)',
   };
 
@@ -113,8 +113,8 @@ export class MoonMapComponent {
     // Draw land borders on top of the overlay for definition
     ctx.beginPath();
     path(countries);
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-    ctx.lineWidth = 0.8;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.lineWidth = 1.2;
     ctx.stroke();
 
     // Draw title and date
