@@ -42,6 +42,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
+      - name: Configure persistent npm cache
+        shell: powershell
+        run: |
+          $npmCacheDir = "D:\npm-cache-islamicmonth"
+          if (-not (Test-Path $npmCacheDir)) {
+            New-Item -ItemType Directory -Path $npmCacheDir -Force | Out-Null
+            Write-Output "Created npm cache directory: $npmCacheDir"
+          }
+          npm config set cache $npmCacheDir
+          Write-Output "npm cache configured to: $npmCacheDir"
+
       - name: npm install
         run: |
           npm ci --ignore-scripts
@@ -55,15 +66,49 @@ jobs:
           npm run build
         env:
           NODE_ENV: production
+          NG_BUILD_CACHE: "true"
 
       # ==========================================
       # BUILD .NET
       # ==========================================
 
+      - name: "Check if .NET 9 is installed globally"
+        id: check-dotnet
+        shell: powershell
+        run: |
+          try {
+            $dotnetVersion = dotnet --version
+            Write-Output "Current .NET version: $dotnetVersion"
+            $majorVersion = $dotnetVersion.Split('.')[0]
+            if ($majorVersion -eq "9") {
+              Write-Output "DOTNET_INSTALLED=true" >> $env:GITHUB_OUTPUT
+              Write-Output ".NET 9 is already installed globally"
+            } else {
+              Write-Output "DOTNET_INSTALLED=false" >> $env:GITHUB_OUTPUT
+              Write-Output ".NET 9 is not installed. Found version $majorVersion instead"
+            }
+          } catch {
+            Write-Output "DOTNET_INSTALLED=false" >> $env:GITHUB_OUTPUT
+            Write-Output ".NET is not installed on the system"
+          }
+
       - name: Setup .NET 9
+        if: steps.check-dotnet.outputs.DOTNET_INSTALLED != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '9.0.x'
+
+      - name: "Configure persistent NuGet cache directory"
+        shell: powershell
+        run: |
+          $nugetCacheDir = "D:\nuget-cache"
+          if (-not (Test-Path $nugetCacheDir)) {
+            New-Item -ItemType Directory -Path $nugetCacheDir -Force | Out-Null
+            Write-Output "Created NuGet cache directory: $nugetCacheDir"
+          }
+          $env:NUGET_PACKAGES = $nugetCacheDir
+          [Environment]::SetEnvironmentVariable("NUGET_PACKAGES", $nugetCacheDir, "User")
+          Write-Output "NuGet cache configured to: $nugetCacheDir"
 
       - name: Copy Angular output to wwwroot
         run: |
@@ -72,7 +117,10 @@ jobs:
 
       - name: Publish .NET project
         run: |
-          dotnet publish server\MoonSightingMaps.csproj -c Release -o server\publish
+          dotnet publish server\MoonSightingMaps.csproj -c Release -o server\publish -p:EnableNETAnalyzers=false -p:RunAnalyzersDuringBuild=false -p:GenerateDocumentationFile=false /maxcpucount /p:BuildInParallel=true
+        env:
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
+          DOTNET_CLI_TELEMETRY_OPTOUT: "true"
 
       # ==========================================
       # DEPLOY
