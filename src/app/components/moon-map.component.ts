@@ -1,12 +1,4 @@
-import {
-  Component,
-  ElementRef,
-  input,
-  effect,
-  viewChild,
-  signal,
-  output,
-} from '@angular/core';
+import { Component, ElementRef, input, effect, viewChild, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   VisibilityGrid,
@@ -122,10 +114,7 @@ export class MoonMapComponent {
     ctx.stroke();
 
     // Draw land
-    const countries = topojson.feature(
-      this.worldData,
-      this.worldData.objects.countries
-    ) as any;
+    const countries = topojson.feature(this.worldData, this.worldData.objects.countries) as any;
     ctx.beginPath();
     path(countries);
     ctx.fillStyle = '#1b2838';
@@ -160,7 +149,7 @@ export class MoonMapComponent {
   private drawVisibilityOverlay(
     ctx: CanvasRenderingContext2D,
     projection: d3.GeoProjection,
-    grid: VisibilityGrid
+    grid: VisibilityGrid,
   ) {
     const res = grid.gridResolution;
 
@@ -182,13 +171,15 @@ export class MoonMapComponent {
         geometry: {
           type: 'Polygon',
           // GeoJSON requires counterclockwise winding for exterior rings
-          coordinates: [[
-            [minLng, minLat],
-            [minLng, maxLat],
-            [maxLng, maxLat],
-            [maxLng, minLat],
-            [minLng, minLat],
-          ]],
+          coordinates: [
+            [
+              [minLng, minLat],
+              [minLng, maxLat],
+              [maxLng, maxLat],
+              [maxLng, minLat],
+              [minLng, minLat],
+            ],
+          ],
         },
       };
 
@@ -254,11 +245,16 @@ export class MoonMapComponent {
       ctx.fillText(ageText, this.CANVAS_WIDTH - 30, 16);
       ctx.fillText(
         `New Moon: ${grid.newMoonTime.toLocaleDateString('en-US', {
-          month: 'short', day: 'numeric', year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
         })} ${grid.newMoonTime.toLocaleTimeString('en-US', {
-          hour: '2-digit', minute: '2-digit', timeZoneName: 'short',
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short',
         })}`,
-        this.CANVAS_WIDTH - 30, 40
+        this.CANVAS_WIDTH - 30,
+        40,
       );
     }
 
@@ -269,16 +265,28 @@ export class MoonMapComponent {
     ctx.fillText(
       'Yallop (1997) Criterion · 4/9 Lag Best Time | IslamicMonth.com',
       this.CANVAS_WIDTH - 20,
-      this.CANVAS_HEIGHT - 15
+      this.CANVAS_HEIGHT - 15,
     );
   }
 
   private drawLegend(ctx: CanvasRenderingContext2D) {
     const legendItems = [
-      { label: 'A - Easily visible (naked eye)', color: this.COLORS[VisibilityCategory.EASILY_VISIBLE] },
-      { label: 'B - Visible (perfect conditions)', color: this.COLORS[VisibilityCategory.VISIBLE_PERFECT_CONDITIONS] },
-      { label: 'C - Optical aid to find moon', color: this.COLORS[VisibilityCategory.OPTICAL_AID_TO_FIND] },
-      { label: 'D - Visible with optical aid only', color: this.COLORS[VisibilityCategory.OPTICAL_AID_ONLY] },
+      {
+        label: 'A - Easily visible (naked eye)',
+        color: this.COLORS[VisibilityCategory.EASILY_VISIBLE],
+      },
+      {
+        label: 'B - Visible (perfect conditions)',
+        color: this.COLORS[VisibilityCategory.VISIBLE_PERFECT_CONDITIONS],
+      },
+      {
+        label: 'C - Optical aid to find moon',
+        color: this.COLORS[VisibilityCategory.OPTICAL_AID_TO_FIND],
+      },
+      {
+        label: 'D - Visible with optical aid only',
+        color: this.COLORS[VisibilityCategory.OPTICAL_AID_ONLY],
+      },
     ];
 
     const legendX = 20;
@@ -318,7 +326,7 @@ export class MoonMapComponent {
   private drawUserPin(
     ctx: CanvasRenderingContext2D,
     projection: d3.GeoProjection,
-    loc: UserLocation
+    loc: UserLocation,
   ) {
     const coords = projection([loc.lng, loc.lat]);
     if (!coords) return;
@@ -336,8 +344,22 @@ export class MoonMapComponent {
     // Pin body (teardrop)
     ctx.beginPath();
     ctx.moveTo(x, y);
-    ctx.bezierCurveTo(x - pinRadius, y - pinHeight * 0.55, x - pinRadius, y - pinHeight + pinRadius * 0.3, x, y - pinHeight);
-    ctx.bezierCurveTo(x + pinRadius, y - pinHeight + pinRadius * 0.3, x + pinRadius, y - pinHeight * 0.55, x, y);
+    ctx.bezierCurveTo(
+      x - pinRadius,
+      y - pinHeight * 0.55,
+      x - pinRadius,
+      y - pinHeight + pinRadius * 0.3,
+      x,
+      y - pinHeight,
+    );
+    ctx.bezierCurveTo(
+      x + pinRadius,
+      y - pinHeight + pinRadius * 0.3,
+      x + pinRadius,
+      y - pinHeight * 0.55,
+      x,
+      y,
+    );
     ctx.fillStyle = '#e53935';
     ctx.fill();
     ctx.strokeStyle = '#fff';

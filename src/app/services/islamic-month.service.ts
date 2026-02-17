@@ -50,9 +50,18 @@ export interface VisibilityGrid {
 }
 
 export const ISLAMIC_MONTH_NAMES = [
-  'Muharram', 'Safar', 'Rabi\' al-Awwal', 'Rabi\' al-Thani',
-  'Jumada al-Ula', 'Jumada al-Thani', 'Rajab', 'Sha\'ban',
-  'Ramadan', 'Shawwal', 'Dhul Qi\'dah', 'Dhul Hijjah',
+  'Muharram',
+  'Safar',
+  "Rabi' al-Awwal",
+  "Rabi' al-Thani",
+  'Jumada al-Ula',
+  'Jumada al-Thani',
+  'Rajab',
+  "Sha'ban",
+  'Ramadan',
+  'Shawwal',
+  "Dhul Qi'dah",
+  'Dhul Hijjah',
 ] as const;
 
 export interface IslamicMonthEntry {
@@ -90,7 +99,11 @@ export class IslamicMonthService {
       const newMoonDate = nm.date;
 
       // Map dates: conjuction day, +1, +2
-      const day0 = new Date(newMoonDate.getFullYear(), newMoonDate.getMonth(), newMoonDate.getDate());
+      const day0 = new Date(
+        newMoonDate.getFullYear(),
+        newMoonDate.getMonth(),
+        newMoonDate.getDate(),
+      );
       const day1 = new Date(day0.getTime() + 1 * 24 * 60 * 60 * 1000);
       const day2 = new Date(day0.getTime() + 2 * 24 * 60 * 60 * 1000);
 
@@ -100,7 +113,8 @@ export class IslamicMonthService {
 
       // Gregorian label for the new moon date
       const gregLabel = newMoonDate.toLocaleDateString('en-US', {
-        month: 'long', year: 'numeric',
+        month: 'long',
+        year: 'numeric',
       });
 
       entries.push({
@@ -129,9 +143,13 @@ export class IslamicMonthService {
   /**
    * Find the month entry matching a route year+slug.
    */
-  findMonthByRoute(yearStr: string, slug: string, months: IslamicMonthEntry[]): IslamicMonthEntry | undefined {
+  findMonthByRoute(
+    yearStr: string,
+    slug: string,
+    months: IslamicMonthEntry[],
+  ): IslamicMonthEntry | undefined {
     const year = parseInt(yearStr.replace('AH', ''), 10);
-    return months.find(m => m.year === year && m.routeSlug.toLowerCase() === slug.toLowerCase());
+    return months.find((m) => m.year === year && m.routeSlug.toLowerCase() === slug.toLowerCase());
   }
 
   /**
@@ -165,9 +183,9 @@ export class IslamicMonthService {
         day: 'numeric',
       });
       const parts = formatter.formatToParts(date);
-      const monthPart = parts.find(p => p.type === 'month');
-      const yearPart = parts.find(p => p.type === 'year');
-      const dayPart = parts.find(p => p.type === 'day');
+      const monthPart = parts.find((p) => p.type === 'month');
+      const yearPart = parts.find((p) => p.type === 'year');
+      const dayPart = parts.find((p) => p.type === 'day');
 
       // The Intl API gives month names in Arabic-origin English names.
       // Map them to common transliterations.
@@ -188,7 +206,8 @@ export class IslamicMonthService {
   private mapIntlIslamicMonth(intlName: string): string {
     // Normalize: strip diacritics, ʻ glyphs, hyphens, and lowercase
     const norm = (s: string) =>
-      s.normalize('NFD')
+      s
+        .normalize('NFD')
         .replace(/[\u0300-\u036f\u02BB\u02BC\u2018\u2019]/g, '')
         .replace(/[-]/g, ' ')
         .toLowerCase()
@@ -206,7 +225,7 @@ export class IslamicMonthService {
     if (/jumad.*ii|jumad.*2|jumad.*thani|jumad.*akhir/i.test(n)) return 'Jumada al-Thani';
     if (/jumad/i.test(n)) return 'Jumada al-Ula';
     if (n.includes('rajab')) return 'Rajab';
-    if (n.includes('shab') || n.includes('sha\'b')) return "Sha'ban";
+    if (n.includes('shab') || n.includes("sha'b")) return "Sha'ban";
     if (n.includes('ramad')) return 'Ramadan';
     if (n.includes('shaww')) return 'Shawwal';
     if (/dhu.*hijj/i.test(n)) return 'Dhul Hijjah';
@@ -246,7 +265,7 @@ export class IslamicMonthService {
   calculateVisibilityGrid(
     date: Date,
     crescentType: CrescentType,
-    resolution: number = 4
+    resolution: number = 4,
   ): VisibilityGrid {
     const results: MoonVisibilityResult[] = [];
     const newMoonTime = this.findPreviousNewMoon(date);
@@ -255,7 +274,12 @@ export class IslamicMonthService {
     for (let lat = -65; lat <= 65; lat += resolution) {
       for (let lng = -180; lng <= 180; lng += resolution) {
         const result = this.calculateVisibilityAtPoint(
-          lat, lng, date, crescentType, newMoonTime, nextNewMoonTime
+          lat,
+          lng,
+          date,
+          crescentType,
+          newMoonTime,
+          nextNewMoonTime,
         );
         results.push(result);
       }
@@ -277,7 +301,7 @@ export class IslamicMonthService {
     date: Date,
     crescentType: CrescentType,
     newMoonTime: Date | null,
-    nextNewMoonTime: Date | null
+    nextNewMoonTime: Date | null,
   ): MoonVisibilityResult {
     const observer = new Observer(lat, lng, 0);
     const localOffset = Math.round(lng / 15);
@@ -288,11 +312,25 @@ export class IslamicMonthService {
     try {
       if (crescentType === 'waxing') {
         return this.calculateWaxingVisibility(
-          observer, lat, lng, year, month, day, localOffset, newMoonTime
+          observer,
+          lat,
+          lng,
+          year,
+          month,
+          day,
+          localOffset,
+          newMoonTime,
         );
       } else {
         return this.calculateWaningVisibility(
-          observer, lat, lng, year, month, day, localOffset, nextNewMoonTime
+          observer,
+          lat,
+          lng,
+          year,
+          month,
+          day,
+          localOffset,
+          nextNewMoonTime,
         );
       }
     } catch {
@@ -306,14 +344,15 @@ export class IslamicMonthService {
    */
   private calculateWaxingVisibility(
     observer: Observer,
-    lat: number, lng: number,
-    year: number, month: number, day: number,
+    lat: number,
+    lng: number,
+    year: number,
+    month: number,
+    day: number,
     localOffset: number,
-    newMoonTime: Date | null
+    newMoonTime: Date | null,
   ): MoonVisibilityResult {
-    const noonUTC = new Date(
-      Date.UTC(year, month, day, 12 - localOffset, 0, 0)
-    );
+    const noonUTC = new Date(Date.UTC(year, month, day, 12 - localOffset, 0, 0));
 
     // Find sunset
     const sunset = SearchRiseSet(Body.Sun, observer, -1, noonUTC, 1);
@@ -341,7 +380,13 @@ export class IslamicMonthService {
     }
 
     return this.computeVisibility(
-      observer, lat, lng, bestTimeAstro, sunset.date, newMoonTime, 'waxing'
+      observer,
+      lat,
+      lng,
+      bestTimeAstro,
+      sunset.date,
+      newMoonTime,
+      'waxing',
     );
   }
 
@@ -351,14 +396,15 @@ export class IslamicMonthService {
    */
   private calculateWaningVisibility(
     observer: Observer,
-    lat: number, lng: number,
-    year: number, month: number, day: number,
+    lat: number,
+    lng: number,
+    year: number,
+    month: number,
+    day: number,
     localOffset: number,
-    nextNewMoonTime: Date | null
+    nextNewMoonTime: Date | null,
   ): MoonVisibilityResult {
-    const midnightUTC = new Date(
-      Date.UTC(year, month, day, 0 - localOffset, 0, 0)
-    );
+    const midnightUTC = new Date(Date.UTC(year, month, day, 0 - localOffset, 0, 0));
 
     // Find sunrise
     const sunrise = SearchRiseSet(Body.Sun, observer, +1, midnightUTC, 1);
@@ -378,9 +424,7 @@ export class IslamicMonthService {
     } else {
       // Moon rises after sunrise or no moonrise found → try fallback
       const searchFallbackStart = new Date(sunrise.date.getTime() - 2 * 3600 * 1000);
-      const fallback = SearchAltitude(
-        Body.Sun, observer, +1, searchFallbackStart, 0.2, -4.0
-      );
+      const fallback = SearchAltitude(Body.Sun, observer, +1, searchFallbackStart, 0.2, -4.0);
       if (fallback) {
         bestTimeAstro = fallback;
       } else {
@@ -389,7 +433,13 @@ export class IslamicMonthService {
     }
 
     return this.computeVisibility(
-      observer, lat, lng, bestTimeAstro, sunrise.date, nextNewMoonTime, 'waning'
+      observer,
+      lat,
+      lng,
+      bestTimeAstro,
+      sunrise.date,
+      nextNewMoonTime,
+      'waning',
     );
   }
 
@@ -398,11 +448,12 @@ export class IslamicMonthService {
    */
   private computeVisibility(
     observer: Observer,
-    lat: number, lng: number,
+    lat: number,
+    lng: number,
     bestTimeAstro: AstroTime,
     refTime: Date,
     moonRefTime: Date | null,
-    crescentType: CrescentType
+    crescentType: CrescentType,
   ): MoonVisibilityResult {
     // Topocentric equatorial coordinates at best time
     const moonEq = Equator(Body.Moon, bestTimeAstro, observer, true, true);
@@ -418,9 +469,12 @@ export class IslamicMonthService {
     // Moon below horizon → not visible
     if (moonHor.altitude < 0) {
       return {
-        lat, lng,
+        lat,
+        lng,
         category: VisibilityCategory.NOT_VISIBLE,
-        arcv, w: 0, q: -999,
+        arcv,
+        w: 0,
+        q: -999,
         observationTime: refTime,
         moonAlt: moonHor.altitude,
         moonAge: this.computeMoonAge(crescentType, refTime, moonRefTime),
@@ -436,8 +490,8 @@ export class IslamicMonthService {
     const moonDistAU = moonIllum.geo_dist;
     const moonRadiusAU = 1737.4 / 149597870.7;
     const sdRad = Math.asin(moonRadiusAU / moonDistAU);
-    const sdArcMin = (sdRad * 180 / Math.PI) * 60;
-    const elongRad = elongation * Math.PI / 180;
+    const sdArcMin = ((sdRad * 180) / Math.PI) * 60;
+    const elongRad = (elongation * Math.PI) / 180;
     const wArcMin = sdArcMin * (1 - Math.cos(elongRad));
 
     // Yallop's q criterion
@@ -454,7 +508,7 @@ export class IslamicMonthService {
       category = VisibilityCategory.EASILY_VISIBLE;
     } else if (q > -0.014) {
       category = VisibilityCategory.VISIBLE_PERFECT_CONDITIONS;
-    } else if (q > -0.160) {
+    } else if (q > -0.16) {
       category = VisibilityCategory.OPTICAL_AID_TO_FIND;
     } else if (q > -0.232) {
       category = VisibilityCategory.OPTICAL_AID_ONLY;
@@ -463,9 +517,12 @@ export class IslamicMonthService {
     }
 
     return {
-      lat, lng,
+      lat,
+      lng,
       category,
-      arcv, w: wArcMin, q,
+      arcv,
+      w: wArcMin,
+      q,
       observationTime: refTime,
       moonAlt: moonHor.altitude,
       moonAge: this.computeMoonAge(crescentType, refTime, moonRefTime),
@@ -475,7 +532,7 @@ export class IslamicMonthService {
   private computeMoonAge(
     crescentType: CrescentType,
     refTime: Date,
-    moonRefTime: Date | null
+    moonRefTime: Date | null,
   ): number {
     if (!moonRefTime) return 0;
     if (crescentType === 'waxing') {
@@ -520,9 +577,12 @@ export class IslamicMonthService {
 
   private emptyResult(lat: number, lng: number): MoonVisibilityResult {
     return {
-      lat, lng,
+      lat,
+      lng,
       category: VisibilityCategory.NOT_VISIBLE,
-      arcv: 0, w: 0, q: -999,
+      arcv: 0,
+      w: 0,
+      q: -999,
       observationTime: null,
       moonAlt: 0,
       moonAge: 0,

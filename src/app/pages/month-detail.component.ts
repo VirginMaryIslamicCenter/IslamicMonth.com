@@ -20,9 +20,7 @@ import { MoonMapComponent } from '../components/moon-map.component';
         <div class="progress-bar">
           <div class="progress-fill"></div>
         </div>
-        <p class="loading-text">
-          Computing visibility maps ({{ computingStep() }}/3)...
-        </p>
+        <p class="loading-text">Computing visibility maps ({{ computingStep() }}/3)...</p>
       </div>
     }
 
@@ -79,10 +77,7 @@ import { MoonMapComponent } from '../components/moon-map.component';
             </div>
             <!-- Map column -->
             <div class="col-lg-8 col-xl-9">
-              <app-moon-map
-                [visibilityGrid]="grid"
-                [userLocation]="locationService.location()"
-              />
+              <app-moon-map [visibilityGrid]="grid" [userLocation]="locationService.location()" />
             </div>
           </div>
         }
@@ -98,7 +93,7 @@ import { MoonMapComponent } from '../components/moon-map.component';
     }
     .progress-bar {
       height: 4px;
-      background: rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 2px;
       overflow: hidden;
       margin-bottom: 12px;
@@ -110,9 +105,15 @@ import { MoonMapComponent } from '../components/moon-map.component';
       animation: progress 2s ease-in-out infinite;
     }
     @keyframes progress {
-      0% { width: 0%; }
-      50% { width: 70%; }
-      100% { width: 100%; }
+      0% {
+        width: 0%;
+      }
+      50% {
+        width: 70%;
+      }
+      100% {
+        width: 100%;
+      }
     }
     .loading-text {
       color: #78909c;
@@ -140,13 +141,13 @@ import { MoonMapComponent } from '../components/moon-map.component';
     /* ---- Info card ---- */
     .info-card {
       background: linear-gradient(145deg, #0d1b2a, #142438);
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 14px;
       padding: 24px 20px 20px;
       height: 100%;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
 
     .info-header {
@@ -166,7 +167,7 @@ import { MoonMapComponent } from '../components/moon-map.component';
 
     .info-divider {
       height: 1px;
-      background: linear-gradient(90deg, rgba(255,255,255,0.08), transparent);
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
       margin: 16px 0;
     }
 
@@ -189,7 +190,9 @@ import { MoonMapComponent } from '../components/moon-map.component';
       color: #b0bec5;
       line-height: 1.6;
     }
-    .sighting-detail strong { color: #e0e0e0; }
+    .sighting-detail strong {
+      color: #e0e0e0;
+    }
     .sighting-action {
       margin: 6px 0 0;
       font-size: 0.95rem;
@@ -204,32 +207,76 @@ import { MoonMapComponent } from '../components/moon-map.component';
       gap: 10px;
       padding: 10px 12px;
       border-radius: 8px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       margin-top: auto;
     }
-    .lv-icon { font-size: 1.3rem; flex-shrink: 0; }
-    .lv-text { display: flex; flex-direction: column; gap: 2px; }
-    .lv-label { font-size: 0.78rem; color: #78909c; }
-    .lv-result { font-size: 0.88rem; font-weight: 600; }
+    .lv-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .lv-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .lv-label {
+      font-size: 0.78rem;
+      color: #78909c;
+    }
+    .lv-result {
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
     .lv-link {
       font-size: 0.85rem;
       color: #42a5f5;
       text-decoration: none;
-      &:hover { text-decoration: underline; }
+      &:hover {
+        text-decoration: underline;
+      }
     }
-    .lv-sub { font-size: 0.72rem; color: #607d8b; }
+    .lv-sub {
+      font-size: 0.72rem;
+      color: #607d8b;
+    }
 
-    .vis-A { background: rgba(50,220,120,0.06); border-color: rgba(50,220,120,0.2); }
-    .vis-A .lv-result { color: #69f0ae; }
-    .vis-B { background: rgba(255,225,50,0.06); border-color: rgba(255,225,50,0.15); }
-    .vis-B .lv-result { color: #ffee58; }
-    .vis-C { background: rgba(255,165,50,0.06); border-color: rgba(255,165,50,0.15); }
-    .vis-C .lv-result { color: #ffa726; }
-    .vis-D { background: rgba(255,90,70,0.06); border-color: rgba(255,90,70,0.15); }
-    .vis-D .lv-result { color: #ef5350; }
-    .vis-E { background: rgba(255,255,255,0.02); }
-    .vis-E .lv-result { color: #607d8b; }
-    .vis-none { background: rgba(255,255,255,0.02); }
+    .vis-A {
+      background: rgba(50, 220, 120, 0.06);
+      border-color: rgba(50, 220, 120, 0.2);
+    }
+    .vis-A .lv-result {
+      color: #69f0ae;
+    }
+    .vis-B {
+      background: rgba(255, 225, 50, 0.06);
+      border-color: rgba(255, 225, 50, 0.15);
+    }
+    .vis-B .lv-result {
+      color: #ffee58;
+    }
+    .vis-C {
+      background: rgba(255, 165, 50, 0.06);
+      border-color: rgba(255, 165, 50, 0.15);
+    }
+    .vis-C .lv-result {
+      color: #ffa726;
+    }
+    .vis-D {
+      background: rgba(255, 90, 70, 0.06);
+      border-color: rgba(255, 90, 70, 0.15);
+    }
+    .vis-D .lv-result {
+      color: #ef5350;
+    }
+    .vis-E {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .vis-E .lv-result {
+      color: #607d8b;
+    }
+    .vis-none {
+      background: rgba(255, 255, 255, 0.02);
+    }
 
     /* ---- Mobile ---- */
     @media (max-width: 991px) {
@@ -260,7 +307,7 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   readonly notFound = signal(false);
 
   ngOnInit() {
-    this.sub = this.route.params.subscribe(params => {
+    this.sub = this.route.params.subscribe((params) => {
       const year = params['year'];
       const month = params['month'];
       this.loadMonth(year, month);
@@ -292,16 +339,18 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
 
     this.monthEntry.set(entry);
 
-    const dayLabels = ['New Moon Day (Conjunction)', '+1 Day After New Moon', '+2 Days After New Moon'];
+    const dayLabels = [
+      'New Moon Day (Conjunction)',
+      '+1 Day After New Moon',
+      '+2 Days After New Moon',
+    ];
     const grids: VisibilityGrid[] = [];
 
     for (let i = 0; i < entry.mapDates.length; i++) {
       this.computingStep.set(i + 1);
       await new Promise<void>((resolve) => {
         setTimeout(() => {
-          const grid = this.moonService.calculateVisibilityGrid(
-            entry.mapDates[i], 'waxing', 4
-          );
+          const grid = this.moonService.calculateVisibilityGrid(entry.mapDates[i], 'waxing', 4);
           grid.dayLabel = dayLabels[i];
           grid.islamicMonthLabel = `${entry.name} ${entry.year} AH`;
           grids.push(grid);
@@ -315,11 +364,14 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   }
 
   getEveningTitle(mapDate: Date): string {
-    return 'Evening of ' + mapDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    });
+    return (
+      'Evening of ' +
+      mapDate.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+      })
+    );
   }
 
   formatShortDate(date: Date): string {
@@ -332,7 +384,11 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
 
     const dayAfter = new Date(mapDate);
     dayAfter.setDate(dayAfter.getDate() + 1);
-    const dayStr = dayAfter.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const dayStr = dayAfter.toLocaleDateString('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+    });
 
     if (entry.name === 'Ramadan') {
       return `Fasting will begin on ${dayStr}`;
@@ -349,7 +405,10 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
     let minDist = Infinity;
     for (const r of grid.results) {
       const d = Math.abs(r.lat - loc.lat) + Math.abs(r.lng - loc.lng);
-      if (d < minDist) { minDist = d; nearest = r; }
+      if (d < minDist) {
+        minDist = d;
+        nearest = r;
+      }
     }
     return nearest?.category ?? 'E';
   }
@@ -357,22 +416,32 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   getLocalIcon(grid: VisibilityGrid): string {
     const cat = this.getLocalCategory(grid);
     switch (cat) {
-      case 'A': return '👁️';
-      case 'B': return '👁️';
-      case 'C': return '🔭';
-      case 'D': return '🔭';
-      default: return '🚫';
+      case 'A':
+        return '👁️';
+      case 'B':
+        return '👁️';
+      case 'C':
+        return '🔭';
+      case 'D':
+        return '🔭';
+      default:
+        return '🚫';
     }
   }
 
   getLocalDescription(grid: VisibilityGrid): string {
     const cat = this.getLocalCategory(grid);
     switch (cat) {
-      case 'A': return 'Easily visible with the naked eye';
-      case 'B': return 'Visible with the naked eye in perfect conditions';
-      case 'C': return 'Need optical aid (binoculars) to find, then visible with naked eye';
-      case 'D': return 'Only visible with optical aid (telescope / binoculars)';
-      default: return 'Moon not expected to be visible';
+      case 'A':
+        return 'Easily visible with the naked eye';
+      case 'B':
+        return 'Visible with the naked eye in perfect conditions';
+      case 'C':
+        return 'Need optical aid (binoculars) to find, then visible with naked eye';
+      case 'D':
+        return 'Only visible with optical aid (telescope / binoculars)';
+      default:
+        return 'Moon not expected to be visible';
     }
   }
 }

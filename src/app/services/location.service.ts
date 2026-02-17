@@ -23,14 +23,18 @@ export class LocationService {
     this.location.set(loc);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(loc));
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   clearLocation() {
     this.location.set(null);
     try {
       localStorage.removeItem(STORAGE_KEY);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 
   private loadFromStorage() {
@@ -42,6 +46,8 @@ export class LocationService {
           this.location.set(parsed);
         }
       }
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   }
 }

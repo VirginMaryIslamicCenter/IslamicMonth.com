@@ -1,13 +1,16 @@
 import {
-  Component, signal, inject, OnInit, ElementRef, viewChild, AfterViewInit,
+  Component,
+  signal,
+  inject,
+  OnInit,
+  ElementRef,
+  viewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
-import {
-  IslamicMonthService,
-  IslamicMonthEntry,
-} from '../services/islamic-month.service';
+import { IslamicMonthService, IslamicMonthEntry } from '../services/islamic-month.service';
 import { LocationService, type UserLocation } from '../services/location.service';
 
 @Component({
@@ -26,7 +29,9 @@ import { LocationService, type UserLocation } from '../services/location.service
           @if (locationService.location(); as loc) {
             <div class="location-display">
               <span class="location-name">{{ loc.displayName }}</span>
-              <button class="location-clear" (click)="clearLocation()" title="Remove location">✕</button>
+              <button class="location-clear" (click)="clearLocation()" title="Remove location">
+                ✕
+              </button>
             </div>
           } @else {
             <form class="location-form" (ngSubmit)="searchLocation()">
@@ -50,10 +55,15 @@ import { LocationService, type UserLocation } from '../services/location.service
 
       <!-- Horizontal scrollable month strip -->
       <nav class="month-strip">
-        <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">‹</button>
-        <div class="strip-track" #monthTrack
+        <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">
+          ‹
+        </button>
+        <div
+          class="strip-track"
+          #monthTrack
           (mousedown)="onDragStart($event)"
-          (touchstart)="onDragStart($event)">
+          (touchstart)="onDragStart($event)"
+        >
           @for (month of islamicMonths(); track month.newMoonDate.getTime()) {
             <a
               class="month-box"
@@ -66,7 +76,9 @@ import { LocationService, type UserLocation } from '../services/location.service
             </a>
           }
         </div>
-        <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">›</button>
+        <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">
+          ›
+        </button>
       </nav>
 
       <!-- Main content area -->
@@ -93,7 +105,7 @@ import { LocationService, type UserLocation } from '../services/location.service
       gap: 16px;
       padding: 14px 24px;
       background: #101c2c;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       flex-wrap: wrap;
     }
     .top-left {
@@ -108,7 +120,9 @@ import { LocationService, type UserLocation } from '../services/location.service
       margin: 0;
       white-space: nowrap;
     }
-    .moon-icon { margin-right: 4px; }
+    .moon-icon {
+      margin-right: 4px;
+    }
     .tagline {
       font-size: 0.75rem;
       color: #607d8b;
@@ -137,32 +151,41 @@ import { LocationService, type UserLocation } from '../services/location.service
       padding: 7px 10px;
       font-size: 0.84rem;
       border-radius: 7px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
       color: #fff;
       outline: none;
       transition: border-color 0.2s;
-      &:focus { border-color: rgba(25,118,210,0.6); }
-      &::placeholder { color: #607d8b; }
+      &:focus {
+        border-color: rgba(25, 118, 210, 0.6);
+      }
+      &::placeholder {
+        color: #607d8b;
+      }
     }
     .location-search-btn {
       padding: 7px 12px;
       border-radius: 7px;
-      border: 1px solid rgba(25,118,210,0.4);
-      background: rgba(25,118,210,0.2);
+      border: 1px solid rgba(25, 118, 210, 0.4);
+      background: rgba(25, 118, 210, 0.2);
       color: #90caf9;
       font-size: 0.95rem;
       cursor: pointer;
-      &:hover { background: rgba(25,118,210,0.35); }
-      &:disabled { opacity: 0.5; cursor: not-allowed; }
+      &:hover {
+        background: rgba(25, 118, 210, 0.35);
+      }
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
     .location-display {
       display: flex;
       align-items: center;
       gap: 6px;
       padding: 6px 10px;
-      background: rgba(25,118,210,0.12);
-      border: 1px solid rgba(25,118,210,0.25);
+      background: rgba(25, 118, 210, 0.12);
+      border: 1px solid rgba(25, 118, 210, 0.25);
       border-radius: 7px;
       max-width: 300px;
     }
@@ -180,7 +203,9 @@ import { LocationService, type UserLocation } from '../services/location.service
       cursor: pointer;
       font-size: 0.85rem;
       padding: 0 2px;
-      &:hover { color: #ef5350; }
+      &:hover {
+        color: #ef5350;
+      }
     }
     .location-error {
       font-size: 0.75rem;
@@ -192,7 +217,7 @@ import { LocationService, type UserLocation } from '../services/location.service
       display: flex;
       align-items: stretch;
       background: #0f1923;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       position: relative;
     }
     .strip-arrow {
@@ -201,13 +226,16 @@ import { LocationService, type UserLocation } from '../services/location.service
       display: flex;
       align-items: center;
       justify-content: center;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
       border: none;
       color: #90a4ae;
       font-size: 1.6rem;
       cursor: pointer;
       transition: background 0.15s;
-      &:hover { background: rgba(255,255,255,0.08); color: #fff; }
+      &:hover {
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+      }
     }
     .strip-track {
       flex: 1;
@@ -219,8 +247,12 @@ import { LocationService, type UserLocation } from '../services/location.service
       cursor: grab;
       -ms-overflow-style: none;
       scrollbar-width: none;
-      &::-webkit-scrollbar { display: none; }
-      &:active { cursor: grabbing; }
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      &:active {
+        cursor: grabbing;
+      }
     }
     .month-box {
       flex-shrink: 0;
@@ -232,19 +264,33 @@ import { LocationService, type UserLocation } from '../services/location.service
       border-radius: 10px;
       text-decoration: none;
       color: #b0bec5;
-      background: rgba(255,255,255,0.03);
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid transparent;
-      transition: background 0.15s, border-color 0.15s;
+      transition:
+        background 0.15s,
+        border-color 0.15s;
       user-select: none;
-      &:hover { background: rgba(255,255,255,0.07); }
+      &:hover {
+        background: rgba(255, 255, 255, 0.07);
+      }
       &.active {
-        background: rgba(25,118,210,0.18);
+        background: rgba(25, 118, 210, 0.18);
         border-color: #42a5f5;
       }
     }
-    .mb-name { font-size: 0.88rem; font-weight: 700; color: #fff; }
-    .mb-meta { font-size: 0.7rem; color: #78909c; }
-    .mb-greg { font-size: 0.68rem; color: #607d8b; }
+    .mb-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .mb-meta {
+      font-size: 0.7rem;
+      color: #78909c;
+    }
+    .mb-greg {
+      font-size: 0.68rem;
+      color: #607d8b;
+    }
 
     /* ---------- content ---------- */
     .content {
@@ -260,11 +306,23 @@ import { LocationService, type UserLocation } from '../services/location.service
         gap: 10px;
         padding: 12px 14px;
       }
-      .top-right { width: 100%; }
-      .location-input { flex: 1; width: auto; }
-      .location-display { max-width: unset; flex: 1; }
-      .month-box { padding: 8px 14px; }
-      .mb-name { font-size: 0.82rem; }
+      .top-right {
+        width: 100%;
+      }
+      .location-input {
+        flex: 1;
+        width: auto;
+      }
+      .location-display {
+        max-width: unset;
+        flex: 1;
+      }
+      .month-box {
+        padding: 8px 14px;
+      }
+      .mb-name {
+        font-size: 0.82rem;
+      }
     }
   `,
 })
@@ -362,7 +420,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     try {
       const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
       const res = await fetch(url, {
-        headers: { 'Accept': 'application/json' },
+        headers: { Accept: 'application/json' },
       });
       const data = await res.json();
 
