@@ -33,7 +33,8 @@
                     <span class="lv-evening">Evening {{ getEveningTitle(grid.date) }}</span>
                   </div>
                   <div class="lv-location">
-                    <img class="location-icon" src="/assets/icons/location.svg" alt="Location" /> {{ loc.displayName }}
+                    <img class="location-icon" src="/assets/icons/location.svg" alt="Location" />
+                    {{ loc.displayName }}
                   </div>
                   <div class="lv-body">
                     <img class="lv-icon" [src]="getLocalIcon(grid)" alt="Visibility" />
