@@ -1,0 +1,33 @@
+/* Global Styles for IslamicMonth */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0d1b2a;
+  color: #ffffff;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+input,
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: rgba(25, 118, 210, 0.4);
+  color: #ffffff;
+}

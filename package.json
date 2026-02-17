@@ -1,0 +1,48 @@
+{
+  "name": "islamic-month",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@10.8.2",
+  "dependencies": {
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@types/d3": "^7.4.3",
+    "@types/topojson-client": "^3.1.5",
+    "astronomy-engine": "^2.1.19",
+    "bootstrap": "^5.3.8",
+    "d3": "^7.9.0",
+    "html2canvas": "^1.4.1",
+    "rxjs": "~7.8.0",
+    "topojson-client": "^3.1.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.1.4",
+    "@angular/cli": "^21.1.4",
+    "@angular/compiler-cli": "^21.1.0",
+    "typescript": "~5.9.2"
+  }
+}
