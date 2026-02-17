@@ -107,9 +107,20 @@ export class IslamicMonthService {
       const day1 = new Date(day0.getTime() + 1 * 24 * 60 * 60 * 1000);
       const day2 = new Date(day0.getTime() + 2 * 24 * 60 * 60 * 1000);
 
-      // Get Islamic month/year — check a few days after new moon when the new month has started
-      const checkDate = new Date(day0.getTime() + 3 * 24 * 60 * 60 * 1000);
+      // Get Islamic month/year — check well after new moon to ensure we're in the new month.
+      // Some browsers/calendars need more offset than others to cross the month boundary.
+      const checkDate = new Date(day0.getTime() + 5 * 24 * 60 * 60 * 1000);
       const hijri = this.getIslamicDate(checkDate);
+
+      // Skip duplicate: if the same month+year as the previous entry, it means the
+      // check date still landed in the previous Islamic month on this device.
+      const prev = entries[entries.length - 1];
+      if (prev && prev.name === hijri.monthName && prev.year === hijri.year) {
+        // Move search forward and try next new moon
+        searchFrom = new Date(nm.date.getTime() + 2 * 24 * 60 * 60 * 1000);
+        i--; // Don't count this iteration
+        continue;
+      }
 
       // Gregorian label for the new moon date
       const gregLabel = newMoonDate.toLocaleDateString('en-US', {
