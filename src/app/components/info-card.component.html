@@ -34,11 +34,18 @@
 
     <div class="card-body">
       <p class="sighting-line">If the believers sight the moon on this evening:</p>
-      <p class="sighting-detail">
-        1st of <strong>{{ monthName() }}</strong> begins the
-        <strong>night of {{ sightingDate() }}</strong>
-      </p>
-      <p class="sighting-action">{{ actionLine() }}</p>
+      <div class="sighting-tiles">
+        <div class="sighting-tile sighting-tile-night">
+          <span class="st-header">1st of {{ monthName() }}</span>
+          <span class="st-date">{{ sightingShortDate() }}</span>
+          <span class="st-period">NIGHT</span>
+        </div>
+        <div class="sighting-tile sighting-tile-day">
+          <span class="st-header">{{ actionLabel() }}</span>
+          <span class="st-date">{{ actionShortDate() }}</span>
+          <span class="st-period">DAY</span>
+        </div>
+      </div>
       @for (special of specialDates(); track special.label) {
         <p class="sighting-special">
           <strong>{{ special.label }}:</strong> {{ special.date }}
@@ -54,6 +61,13 @@
     <div class="mf-section-header">
       <span class="mf-icon">🌙</span>
       <span class="mf-title">Moon Finder</span>
+      <button class="mf-more-details-btn" (click)="toggleMoreDetails()">
+        <span class="mf-md-full">{{
+          moreDetailsExpanded() ? 'Hide Details' : 'More Details'
+        }}</span>
+        <span class="mf-md-short">{{ moreDetailsExpanded() ? 'Hide' : 'More' }}</span>
+        <span class="mf-md-arrow" [class.expanded]="moreDetailsExpanded()">▾</span>
+      </button>
     </div>
 
     @if (moonPosition(); as mp) {
@@ -681,9 +695,4 @@
       </div>
     }
   }
-  <!-- More Details Toggle -->
-  <button class="mf-more-details-btn" (click)="toggleMoreDetails()">
-    {{ moreDetailsExpanded() ? 'Hide Details' : 'More Details' }}
-    <span class="mf-md-arrow" [class.expanded]="moreDetailsExpanded()">▾</span>
-  </button>
 </div>

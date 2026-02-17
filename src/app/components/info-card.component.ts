@@ -46,6 +46,40 @@ export class InfoCardComponent {
   readonly locationService = inject(LocationService);
   readonly locationDialogService = inject(LocationDialogService);
 
+  /** Short date for the sighting night (grid date) e.g. "FEB 18" */
+  readonly sightingShortDate = computed(() => {
+    const d = this.grid()?.date;
+    if (!d) return '';
+    const month = d.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+    return `${month} ${d.getDate()}`;
+  });
+
+  /** Short date for the day after (fasting/eid/day start) e.g. "FEB 19" */
+  readonly actionShortDate = computed(() => {
+    const d = this.grid()?.date;
+    if (!d) return '';
+    const next = new Date(d);
+    next.setDate(next.getDate() + 1);
+    const month = next.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+    return `${month} ${next.getDate()}`;
+  });
+
+  /** Label for the action tile ("Fasting", "Eid Prayers", "1st Day") */
+  readonly actionLabel = computed(() => {
+    const line = this.actionLine();
+    if (line.includes('Fasting')) return 'Fasting';
+    if (line.includes('Eid')) return 'Eid Prayers';
+    return '1st Day';
+  });
+
+  /** Icon for the action tile */
+  readonly actionIcon = computed(() => {
+    const line = this.actionLine();
+    if (line.includes('Fasting')) return '🕌';
+    if (line.includes('Eid')) return '🎉';
+    return '📅';
+  });
+
   /** Computed position for the altitude arc arrow (used by dialog SVG, center 100,100 r=85) */
   readonly altArcMoonPos = computed(() => {
     const mp = this.moonPosition();

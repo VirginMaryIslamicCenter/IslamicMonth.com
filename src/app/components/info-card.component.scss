@@ -24,25 +24,68 @@
 }
 .sighting-line {
   margin: 0;
-  font-size: 1.3rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  color: #64b5f6;
-  letter-spacing: 0.3px;
-}
-.sighting-detail {
-  margin: 0;
-  font-size: 1.3rem;
   color: #b0bec5;
-  line-height: 1.6;
+  letter-spacing: 0.5px;
 }
-.sighting-detail strong {
-  color: #e0e0e0;
+
+/* Sighting tiles (similar to mf-info-grid) */
+.sighting-tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
 }
-.sighting-action {
-  margin: 6px 0 0;
+
+.sighting-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s;
+}
+
+.sighting-tile-night {
+  border-color: rgba(100, 181, 246, 0.2);
+}
+
+.sighting-tile-day {
+  border-color: rgba(128, 255, 132, 0.2);
+}
+
+.st-header {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #607d8b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.st-date {
   font-size: 1.3rem;
-  font-weight: 600;
+  font-weight: 700;
+  color: #e0e0e0;
+  letter-spacing: 1px;
+}
+
+.sighting-tile-night .st-date {
+  color: #64b5f6;
+}
+
+.sighting-tile-day .st-date {
   color: #80ff84;
+}
+
+.st-period {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #78909c;
 }
 .sighting-special {
   margin: 6px 0 0;
@@ -264,12 +307,21 @@
     font-size: 0.78rem;
   }
 
-  .sighting-detail {
-    font-size: 0.88rem;
+  .st-header {
+    font-size: 0.55rem;
   }
 
-  .sighting-action {
-    font-size: 0.88rem;
+  .st-date {
+    font-size: 0.95rem;
+  }
+
+  .st-period {
+    font-size: 0.5rem;
+  }
+
+  .sighting-tile {
+    padding: 8px 6px;
+    gap: 2px;
   }
 
   .sighting-special {
@@ -286,6 +338,19 @@
     }
     .mf-title {
       font-size: 0.82rem;
+    }
+
+    .mf-more-details-btn {
+      padding: 3px 7px;
+      font-size: 0.65rem;
+
+      .mf-md-full {
+        display: none;
+      }
+
+      .mf-md-short {
+        display: inline;
+      }
     }
   }
 
@@ -387,11 +452,6 @@
     font-size: 0.78rem;
   }
 
-  .mf-more-details-btn {
-    padding: 7px;
-    font-size: 0.75rem;
-  }
-
   .mf-compass-container {
     max-width: 140px;
   }
@@ -451,9 +511,12 @@
   align-items: center;
   gap: 8px;
   padding: 8px 12px 4px;
+  margin-bottom: 15px;
 
   .mf-icon {
     font-size: 1.1rem;
+    display: inline-block;
+    transform: rotate(90deg);
   }
 
   .mf-title {
@@ -461,6 +524,46 @@
     font-weight: 600;
     color: #b0bec5;
     letter-spacing: 0.5px;
+    flex: 1;
+  }
+
+  .mf-more-details-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    color: #90a4ae;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #b0bec5;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .mf-md-full {
+      display: inline;
+    }
+
+    .mf-md-short {
+      display: none;
+    }
+
+    .mf-md-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+
+      &.expanded {
+        transform: rotate(180deg);
+      }
+    }
   }
 }
 
@@ -889,37 +992,7 @@
 }
 
 /* More Details Button */
-.mf-more-details-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  color: #90a4ae;
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #b0bec5;
-    border-color: rgba(255, 255, 255, 0.12);
-  }
-
-  .mf-md-arrow {
-    font-size: 0.8rem;
-    transition: transform 0.3s ease;
-
-    &.expanded {
-      transform: rotate(180deg);
-    }
-  }
-}
+/* (now inline in .mf-section-header, standalone styles removed) */
 
 /* Extra Details Container */
 .mf-extra-details {
