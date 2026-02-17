@@ -5,19 +5,11 @@
         <img class="brand-logo" src="/assets/icons/logo.svg" alt="IslamicMonth" />
       </div>
       <div class="top-right" id="sidebar-top">
-        <img
-          class="loc-label d-none d-md-inline"
-          src="/assets/icons/location.svg"
-          alt="Location"
-        />
+        <img class="loc-label d-none d-md-inline" src="/assets/icons/location.svg" alt="Location" />
         @if (locationService.location(); as loc) {
           <div class="location-display">
             <span class="location-name">{{ loc.displayName }}</span>
-            <button
-              class="location-change"
-              (click)="openLocationDialog()"
-              title="Change location"
-            >
+            <button class="location-change" (click)="openLocationDialog()" title="Change location">
               <span class="change-text">Change</span>
               <img class="change-icon" src="/assets/icons/edit.svg" alt="Change" />
             </button>

@@ -1,9 +1,4 @@
-import {
-  Component,
-  signal,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { Component, signal, inject, OnInit } from '@angular/core';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { IslamicMonthService, IslamicMonthEntry } from '../services/islamic-month.service';
 import { LocationService } from '../services/location.service';

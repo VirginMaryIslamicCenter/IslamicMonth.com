@@ -1,11 +1,4 @@
-import {
-  Component,
-  input,
-  viewChild,
-  ElementRef,
-  AfterViewInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, input, viewChild, ElementRef, AfterViewInit, OnDestroy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { IslamicMonthEntry } from '../services/islamic-month.service';
 
