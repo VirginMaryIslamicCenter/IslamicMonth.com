@@ -46,4 +46,644 @@
       }
     </div>
   }
+
+  <!-- Moon Finder Section -->
+  @if (locationService.location()) {
+    <div class="info-divider"></div>
+
+    <div class="mf-section-header">
+      <span class="mf-icon">🌙</span>
+      <span class="mf-title">Moon Finder</span>
+    </div>
+
+    @if (moonPosition(); as mp) {
+      <div class="moon-finder">
+        <!-- Time Slider -->
+        <div class="mf-time-control">
+          <div class="mf-time-header">
+            <span class="mf-time-label">Observation Time</span>
+            <span class="mf-time-display">{{ sliderTimeDisplay() }}</span>
+          </div>
+          <input
+            type="range"
+            class="mf-slider"
+            min="0"
+            max="1439"
+            step="1"
+            [ngModel]="sliderMinutes()"
+            (ngModelChange)="onSliderChange($event)"
+          />
+          <div class="mf-slider-labels">
+            <span>12 AM</span>
+            <span>6 AM</span>
+            <span>12 PM</span>
+            <span>6 PM</span>
+            <span>12 AM</span>
+          </div>
+          @if (!isAtSunset()) {
+            <button class="mf-reset-btn" (click)="resetToSunset()">↻ Reset to Sunset</button>
+          }
+        </div>
+
+        <!-- Direction Readout with inline altitude thumbnail -->
+        <div class="mf-direction-readout">
+          <div class="mf-dir-main">
+            <span class="mf-dir-label">Face</span>
+            <span class="mf-dir-value">{{ mp.compassDirection }}</span>
+            <span class="mf-dir-degrees">{{ mp.compassDegrees }}</span>
+          </div>
+          <div class="mf-dir-alt">
+            <span class="mf-dir-label">Look</span>
+            <span class="mf-dir-value" [class.below-horizon]="!mp.isAboveHorizon">
+              {{ mp.altitude >= 0 ? mp.altitude.toFixed(1) + '° up' : 'Below horizon' }}
+            </span>
+          </div>
+          <!-- Altitude arc thumbnail -->
+          <div class="mf-alt-thumb" (click)="showAltitudeDialog()" title="Click to enlarge">
+            <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="thumbSkyGrad" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="rgba(13,27,42,0)" />
+                  <stop offset="100%" stop-color="rgba(30,60,110,0.35)" />
+                </linearGradient>
+                <marker
+                  id="arrowThumb"
+                  markerWidth="18"
+                  markerHeight="14"
+                  refX="9"
+                  refY="7"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M 0 0 L 18 7 L 0 14 L 5 7 Z" fill="#ffd600" />
+                </marker>
+                <marker
+                  id="arrowThumbBelow"
+                  markerWidth="18"
+                  markerHeight="14"
+                  refX="9"
+                  refY="7"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <path d="M 0 0 L 18 7 L 0 14 L 5 7 Z" fill="#ef5350" />
+                </marker>
+              </defs>
+              <!-- Sky gradient fill -->
+              <path d="M 20 115 A 95 95 0 0 1 200 115" fill="url(#thumbSkyGrad)" />
+              <!-- Horizon -->
+              <line
+                x1="10"
+                y1="115"
+                x2="210"
+                y2="115"
+                stroke="rgba(255,255,255,0.5)"
+                stroke-width="3"
+              />
+              <!-- Arcs: 30°, 60°, 90° -->
+              <path
+                d="M 20 115 A 95 95 0 0 1 200 115"
+                fill="none"
+                stroke="rgba(255,255,255,0.2)"
+                stroke-width="2"
+                stroke-dasharray="6 4"
+              />
+              <path
+                d="M 47 115 A 63 63 0 0 1 173 115"
+                fill="none"
+                stroke="rgba(255,255,255,0.15)"
+                stroke-width="1.5"
+                stroke-dasharray="5 4"
+              />
+              <path
+                d="M 78 115 A 32 32 0 0 1 142 115"
+                fill="none"
+                stroke="rgba(255,255,255,0.12)"
+                stroke-width="1.5"
+                stroke-dasharray="4 4"
+              />
+              <!-- Tick marks + labels -->
+              <line
+                x1="200"
+                y1="115"
+                x2="200"
+                y2="108"
+                stroke="rgba(255,255,255,0.45)"
+                stroke-width="2"
+              />
+              <text
+                x="196"
+                y="105"
+                fill="rgba(255,255,255,0.7)"
+                font-size="12"
+                font-weight="600"
+                font-family="sans-serif"
+                text-anchor="end"
+              >
+                0°
+              </text>
+              <line
+                x1="173"
+                y1="52"
+                x2="176"
+                y2="47"
+                stroke="rgba(255,255,255,0.35)"
+                stroke-width="2"
+              />
+              <text
+                x="170"
+                y="47"
+                fill="rgba(255,255,255,0.6)"
+                font-size="12"
+                font-weight="600"
+                font-family="sans-serif"
+                text-anchor="end"
+              >
+                30°
+              </text>
+              <line
+                x1="142"
+                y1="23"
+                x2="144"
+                y2="17"
+                stroke="rgba(255,255,255,0.35)"
+                stroke-width="2"
+              />
+              <text
+                x="139"
+                y="19"
+                fill="rgba(255,255,255,0.6)"
+                font-size="12"
+                font-weight="600"
+                font-family="sans-serif"
+                text-anchor="end"
+              >
+                60°
+              </text>
+              <text
+                x="110"
+                y="18"
+                fill="rgba(255,255,255,0.55)"
+                font-size="12"
+                font-weight="600"
+                font-family="sans-serif"
+                text-anchor="middle"
+              >
+                90°
+              </text>
+              <!-- Moon arrow -->
+              @if (mp.altitude > 0) {
+                <line
+                  x1="110"
+                  y1="115"
+                  [attr.x2]="altThumbMoonPos().x"
+                  [attr.y2]="altThumbMoonPos().y"
+                  stroke="rgba(255,214,0,0.9)"
+                  stroke-width="5"
+                  marker-end="url(#arrowThumb)"
+                />
+                <circle
+                  [attr.cx]="altThumbMoonPos().x"
+                  [attr.cy]="altThumbMoonPos().y"
+                  r="12"
+                  fill="rgba(255,214,0,0.25)"
+                />
+                <circle
+                  [attr.cx]="altThumbMoonPos().x"
+                  [attr.cy]="altThumbMoonPos().y"
+                  r="5"
+                  fill="rgba(255,214,0,0.7)"
+                />
+              } @else {
+                <line
+                  x1="110"
+                  y1="75"
+                  x2="110"
+                  y2="113"
+                  stroke="rgba(239,83,80,0.9)"
+                  stroke-width="5"
+                  marker-end="url(#arrowThumbBelow)"
+                />
+                <text
+                  x="110"
+                  y="66"
+                  text-anchor="middle"
+                  fill="#ef5350"
+                  font-size="16"
+                  font-weight="700"
+                  font-family="sans-serif"
+                >
+                  Below
+                </text>
+              }
+              <!-- Altitude value at bottom -->
+              <text
+                x="110"
+                y="128"
+                text-anchor="middle"
+                fill="rgba(255,255,255,0.6)"
+                font-size="11"
+                font-weight="600"
+                font-family="sans-serif"
+              >
+                {{ mp.altitude >= 0 ? mp.altitude.toFixed(1) + '°' : 'below' }}
+              </text>
+            </svg>
+            <span class="mf-alt-thumb-hint">⤢</span>
+          </div>
+        </div>
+
+        <!-- Altitude Dialog Overlay -->
+        @if (altitudeDialogOpen()) {
+          <div class="mf-alt-dialog-backdrop" (click)="closeAltitudeDialog()">
+            <div class="mf-alt-dialog" (click)="$event.stopPropagation()">
+              <div class="mf-alt-dialog-header">
+                <span class="mf-alt-dialog-title">Moon Altitude</span>
+                <button class="mf-alt-dialog-close" (click)="closeAltitudeDialog()">✕</button>
+              </div>
+              <div class="mf-alt-dialog-body">
+                <svg viewBox="0 0 200 110" xmlns="http://www.w3.org/2000/svg">
+                  <line
+                    x1="10"
+                    y1="100"
+                    x2="190"
+                    y2="100"
+                    stroke="rgba(255,255,255,0.15)"
+                    stroke-width="1"
+                  />
+                  <text x="15" y="95" fill="rgba(255,255,255,0.3)" font-size="8">Horizon</text>
+                  <path
+                    d="M 10 100 A 90 90 0 0 1 190 100"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.04)"
+                    stroke-width="0.5"
+                  />
+                  <path
+                    d="M 33 100 A 67 67 0 0 1 167 100"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.04)"
+                    stroke-width="0.5"
+                  />
+                  <path
+                    d="M 55 100 A 45 45 0 0 1 145 100"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.04)"
+                    stroke-width="0.5"
+                  />
+                  <text
+                    x="190"
+                    y="95"
+                    fill="rgba(255,255,255,0.25)"
+                    font-size="7"
+                    text-anchor="end"
+                  >
+                    0°
+                  </text>
+                  <text x="167" y="40" fill="rgba(255,255,255,0.2)" font-size="7">30°</text>
+                  <text x="147" y="18" fill="rgba(255,255,255,0.2)" font-size="7">60°</text>
+                  <text x="103" y="8" fill="rgba(255,255,255,0.2)" font-size="7">90°</text>
+                  <defs>
+                    <marker
+                      id="arrowMoon"
+                      markerWidth="10"
+                      markerHeight="8"
+                      refX="5"
+                      refY="4"
+                      orient="auto"
+                      markerUnits="userSpaceOnUse"
+                    >
+                      <path d="M 0 0 L 10 4 L 0 8 L 3 4 Z" fill="#ffd600" />
+                    </marker>
+                    <marker
+                      id="arrowBelow"
+                      markerWidth="10"
+                      markerHeight="8"
+                      refX="5"
+                      refY="4"
+                      orient="auto"
+                      markerUnits="userSpaceOnUse"
+                    >
+                      <path d="M 0 0 L 10 4 L 0 8 L 3 4 Z" fill="#ef5350" />
+                    </marker>
+                  </defs>
+                  @if (mp.altitude > 0) {
+                    <line
+                      x1="100"
+                      y1="100"
+                      [attr.x2]="altArcMoonPos().x"
+                      [attr.y2]="altArcMoonPos().y"
+                      stroke="rgba(255,214,0,0.5)"
+                      stroke-width="2"
+                      marker-end="url(#arrowMoon)"
+                    />
+                    <circle
+                      [attr.cx]="altArcMoonPos().x"
+                      [attr.cy]="altArcMoonPos().y"
+                      r="8"
+                      fill="rgba(255,214,0,0.1)"
+                    />
+                  } @else {
+                    <line
+                      x1="100"
+                      y1="80"
+                      x2="100"
+                      y2="98"
+                      stroke="rgba(239,83,80,0.5)"
+                      stroke-width="2"
+                      marker-end="url(#arrowBelow)"
+                    />
+                    <text
+                      x="100"
+                      y="75"
+                      text-anchor="middle"
+                      fill="#ef5350"
+                      font-size="9"
+                      font-weight="500"
+                    >
+                      Below Horizon
+                    </text>
+                  }
+                </svg>
+              </div>
+              <div class="mf-alt-dialog-info">
+                <span class="mf-alt-dialog-value">{{
+                  mp.altitude >= 0
+                    ? mp.altitude.toFixed(1) + '° above horizon'
+                    : mp.altitude.toFixed(1) + '° below horizon'
+                }}</span>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Key Info: Moonset + Best Time (always visible) -->
+        <div class="mf-info-grid">
+          <div class="mf-info-item">
+            <span class="mf-info-icon">🌇</span>
+            <div class="mf-info-detail">
+              <span class="mf-info-label">Moonset</span>
+              <span class="mf-info-value">{{ formatTime(mp.moonset) }}</span>
+            </div>
+          </div>
+          <div class="mf-info-item">
+            <span class="mf-info-icon">🔭</span>
+            <div class="mf-info-detail">
+              <span class="mf-info-label">Best Time</span>
+              <span class="mf-info-value">{{ formatTime(mp.bestTime) }}</span>
+            </div>
+          </div>
+        </div>
+
+        @if (moreDetailsExpanded()) {
+          <!-- Extra Info Grid -->
+          <div class="mf-info-grid">
+            <div class="mf-info-item">
+              <span class="mf-info-icon">🌅</span>
+              <div class="mf-info-detail">
+                <span class="mf-info-label">Moonrise</span>
+                <span class="mf-info-value">{{ formatTime(mp.moonrise) }}</span>
+              </div>
+            </div>
+            <div class="mf-info-item">
+              <span class="mf-info-icon">✨</span>
+              <div class="mf-info-detail">
+                <span class="mf-info-label">Illumination</span>
+                <span class="mf-info-value">{{ mp.illumination.toFixed(1) }}%</span>
+              </div>
+            </div>
+          </div>
+          <div class="mf-extra-details">
+            <!-- Compass Rose -->
+            <div class="mf-compass-container">
+              <svg class="mf-compass" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer rings -->
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="90"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.1)"
+                  stroke-width="1"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="70"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  stroke-width="0.5"
+                />
+                <circle
+                  cx="100"
+                  cy="100"
+                  r="50"
+                  fill="none"
+                  stroke="rgba(255,255,255,0.04)"
+                  stroke-width="0.5"
+                />
+
+                <!-- Cardinal lines -->
+                <line
+                  x1="100"
+                  y1="10"
+                  x2="100"
+                  y2="30"
+                  stroke="rgba(255,255,255,0.2)"
+                  stroke-width="1"
+                />
+                <line
+                  x1="100"
+                  y1="170"
+                  x2="100"
+                  y2="190"
+                  stroke="rgba(255,255,255,0.2)"
+                  stroke-width="1"
+                />
+                <line
+                  x1="10"
+                  y1="100"
+                  x2="30"
+                  y2="100"
+                  stroke="rgba(255,255,255,0.2)"
+                  stroke-width="1"
+                />
+                <line
+                  x1="170"
+                  y1="100"
+                  x2="190"
+                  y2="100"
+                  stroke="rgba(255,255,255,0.2)"
+                  stroke-width="1"
+                />
+
+                <!-- Intercardinal lines -->
+                <line
+                  x1="36"
+                  y1="36"
+                  x2="50"
+                  y2="50"
+                  stroke="rgba(255,255,255,0.08)"
+                  stroke-width="0.5"
+                />
+                <line
+                  x1="164"
+                  y1="36"
+                  x2="150"
+                  y2="50"
+                  stroke="rgba(255,255,255,0.08)"
+                  stroke-width="0.5"
+                />
+                <line
+                  x1="36"
+                  y1="164"
+                  x2="50"
+                  y2="150"
+                  stroke="rgba(255,255,255,0.08)"
+                  stroke-width="0.5"
+                />
+                <line
+                  x1="164"
+                  y1="164"
+                  x2="150"
+                  y2="150"
+                  stroke="rgba(255,255,255,0.08)"
+                  stroke-width="0.5"
+                />
+
+                <!-- Cardinal labels -->
+                <text
+                  x="100"
+                  y="22"
+                  text-anchor="middle"
+                  fill="#e0e0e0"
+                  font-size="11"
+                  font-weight="600"
+                >
+                  N
+                </text>
+                <text
+                  x="100"
+                  y="196"
+                  text-anchor="middle"
+                  fill="#9e9e9e"
+                  font-size="11"
+                  font-weight="500"
+                >
+                  S
+                </text>
+                <text
+                  x="8"
+                  y="104"
+                  text-anchor="middle"
+                  fill="#9e9e9e"
+                  font-size="11"
+                  font-weight="500"
+                >
+                  W
+                </text>
+                <text
+                  x="192"
+                  y="104"
+                  text-anchor="middle"
+                  fill="#9e9e9e"
+                  font-size="11"
+                  font-weight="500"
+                >
+                  E
+                </text>
+
+                <!-- Azimuth glow arc -->
+                @if (mp.isAboveHorizon) {
+                  <circle
+                    cx="100"
+                    cy="100"
+                    r="75"
+                    fill="none"
+                    stroke="url(#moonGlow)"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    [attr.stroke-dasharray]="
+                      (mp.azimuth / 360) * 471 + ' ' + (471 - (mp.azimuth / 360) * 471)
+                    "
+                    [attr.stroke-dashoffset]="117.75"
+                    opacity="0.5"
+                  />
+                }
+
+                <!-- Moon indicator -->
+                <g [attr.transform]="'rotate(' + mp.azimuth + ' 100 100)'">
+                  <line
+                    x1="100"
+                    y1="100"
+                    x2="100"
+                    y2="28"
+                    stroke="url(#beamGradient)"
+                    stroke-width="1.5"
+                    opacity="0.6"
+                  />
+                  <circle
+                    cx="100"
+                    cy="28"
+                    r="8"
+                    [attr.fill]="
+                      mp.isAboveHorizon ? 'rgba(255, 214, 0, 0.15)' : 'rgba(255, 100, 100, 0.1)'
+                    "
+                  />
+                  <circle
+                    cx="100"
+                    cy="28"
+                    r="5"
+                    [attr.fill]="mp.isAboveHorizon ? '#ffd600' : '#ef5350'"
+                  />
+                  <circle
+                    cx="100"
+                    cy="28"
+                    r="3"
+                    [attr.fill]="mp.isAboveHorizon ? '#fff9c4' : '#ffcdd2'"
+                  />
+                </g>
+
+                <!-- Center dot -->
+                <circle cx="100" cy="100" r="3" fill="rgba(255,255,255,0.3)" />
+                <circle cx="100" cy="100" r="1.5" fill="rgba(255,255,255,0.6)" />
+
+                <defs>
+                  <linearGradient id="beamGradient" x1="0" y1="1" x2="0" y2="0">
+                    <stop offset="0%" stop-color="rgba(255,214,0,0)" />
+                    <stop offset="100%" stop-color="rgba(255,214,0,0.8)" />
+                  </linearGradient>
+                  <linearGradient id="moonGlow" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="rgba(255,214,0,0)" />
+                    <stop offset="100%" stop-color="rgba(255,214,0,0.6)" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+
+            <!-- Best time details -->
+            @if (mp.bestTime) {
+              <div class="mf-best-time-detail">
+                <div class="mf-bt-header">At best viewing time:</div>
+                <div class="mf-bt-row">
+                  <span
+                    >Face <strong>{{ mp.bestTimeCompass }}</strong> ({{
+                      mp.bestTimeAzimuth.toFixed(1)
+                    }}°)</span
+                  >
+                  <span
+                    >Look <strong>{{ mp.bestTimeAltitude.toFixed(1) }}° up</strong></span
+                  >
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+  <!-- More Details Toggle -->
+  <button class="mf-more-details-btn" (click)="toggleMoreDetails()">
+    {{ moreDetailsExpanded() ? 'Hide Details' : 'More Details' }}
+    <span class="mf-md-arrow" [class.expanded]="moreDetailsExpanded()">▾</span>
+  </button>
 </div>
