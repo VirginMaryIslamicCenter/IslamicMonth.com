@@ -12,10 +12,12 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router, ActivatedRoute } from '@angular/router';
 import { IslamicMonthService, IslamicMonthEntry } from '../services/islamic-month.service';
 import { LocationService, type UserLocation } from '../services/location.service';
+import { LocationDialogService } from '../services/location-dialog.service';
+import { LocationDialogComponent } from '../components/location-dialog.component';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, LocationDialogComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -24,13 +26,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   readonly locationService = inject(LocationService);
+  readonly locationDialogService = inject(LocationDialogService);
   readonly islamicMonths = signal<IslamicMonthEntry[]>([]);
 
   private readonly monthTrackRef = viewChild<ElementRef<HTMLDivElement>>('monthTrack');
-
-  locationQuery = '';
-  readonly searching = signal(false);
-  readonly locationError = signal<string | null>(null);
 
   // Drag state
   private dragging = false;
@@ -102,42 +101,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.dragging = false;
   };
 
-  clearLocation() {
-    this.locationService.clearLocation();
-    this.locationQuery = '';
-    this.locationError.set(null);
+  openLocationDialog() {
+    this.locationDialogService.open();
   }
 
-  async searchLocation() {
-    const query = this.locationQuery.trim();
-    if (!query) return;
-
-    this.searching.set(true);
-    this.locationError.set(null);
-
-    try {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=1&q=${encodeURIComponent(query)}`;
-      const res = await fetch(url, {
-        headers: { Accept: 'application/json' },
-      });
-      const data = await res.json();
-
-      if (data?.length > 0) {
-        const result = data[0];
-        const loc: UserLocation = {
-          lat: parseFloat(result.lat),
-          lng: parseFloat(result.lon),
-          displayName: this.locationService.formatAddress(result.address, query),
-        };
-        this.locationService.setLocation(loc);
-        this.locationQuery = '';
-      } else {
-        this.locationError.set('Location not found. Try a different search.');
-      }
-    } catch {
-      this.locationError.set('Network error. Please try again.');
-    } finally {
-      this.searching.set(false);
-    }
+  closeLocationDialog() {
+    this.locationDialogService.close();
   }
 }

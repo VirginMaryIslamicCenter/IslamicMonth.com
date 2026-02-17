@@ -11,26 +11,14 @@
           @if (locationService.location(); as loc) {
             <div class="location-display">
               <span class="location-name">{{ loc.displayName }}</span>
-              <button class="location-clear" (click)="clearLocation()" title="Remove location">
-                ✕
+              <button class="location-change" (click)="openLocationDialog()" title="Change location">
+                Change
               </button>
             </div>
           } @else {
-            <form class="location-form" (ngSubmit)="searchLocation()">
-              <input
-                type="text"
-                class="location-input"
-                placeholder="City, state, country…"
-                [(ngModel)]="locationQuery"
-                name="locationQuery"
-              />
-              <button type="submit" class="location-search-btn" [disabled]="searching()">
-                {{ searching() ? '…' : '→' }}
-              </button>
-            </form>
-          }
-          @if (locationError()) {
-            <span class="location-error">{{ locationError() }}</span>
+            <button class="set-location-btn" (click)="openLocationDialog()">
+              Set Location
+            </button>
           }
         </div>
       </div>
@@ -76,4 +64,9 @@
   <main class="content">
     <router-outlet />
   </main>
+
+  <!-- Location Dialog -->
+  @if (locationDialogService.isOpen()) {
+    <app-location-dialog (close)="closeLocationDialog()" />
+  }
 </div>

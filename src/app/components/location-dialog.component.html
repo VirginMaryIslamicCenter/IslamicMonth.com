@@ -1,0 +1,50 @@
+<div class="dialog-backdrop" (click)="closeDialog()">
+  <div class="dialog-content" (click)="$event.stopPropagation()">
+    <div class="dialog-header">
+      <h2 class="dialog-title">Set Your Location</h2>
+      <button class="dialog-close" (click)="closeDialog()" aria-label="Close">✕</button>
+    </div>
+
+    <div class="dialog-body">
+      <!-- Browser Location Button -->
+      <button 
+        class="browser-location-btn" 
+        (click)="getBrowserLocation()"
+        [disabled]="gettingBrowser()"
+      >
+        <span class="btn-icon">📍</span>
+        <span class="btn-text">{{ gettingBrowser() ? 'Getting location...' : 'Use my current location' }}</span>
+      </button>
+
+      <div class="divider">
+        <span class="divider-text">or</span>
+      </div>
+
+      <!-- Search Form -->
+      <form class="search-form" (ngSubmit)="searchLocation()">
+        <label class="search-label">Enter a location</label>
+        <div class="search-input-wrapper">
+          <input
+            type="text"
+            class="search-input"
+            placeholder="City, state, country…"
+            [(ngModel)]="locationQuery"
+            name="locationQuery"
+            [disabled]="searching()"
+          />
+          <button 
+            type="submit" 
+            class="search-btn" 
+            [disabled]="searching() || !locationQuery.trim()"
+          >
+            {{ searching() ? '…' : 'Search' }}
+          </button>
+        </div>
+      </form>
+
+      @if (locationError()) {
+        <div class="error-message">{{ locationError() }}</div>
+      }
+    </div>
+  </div>
+</div>

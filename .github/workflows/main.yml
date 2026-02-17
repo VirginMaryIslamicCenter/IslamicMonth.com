@@ -28,7 +28,7 @@ jobs:
     strategy:
       matrix:
         node-version: [20.x]
-        runner: [sqlstaging-vmic, SQL-MAIN]
+        runner: [sqlstaging-vmic]
 
     steps:
       - uses: actions/checkout@v6

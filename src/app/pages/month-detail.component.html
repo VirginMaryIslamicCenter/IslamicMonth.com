@@ -22,18 +22,7 @@
           <div class="info-card">
             <div class="info-header">
               <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
-              <h3 class="evening-title">Evening of<br />{{ getEveningTitle(grid.date) }}</h3>
-            </div>
-
-            <div class="info-divider"></div>
-
-            <div class="card-body">
-              <p class="sighting-line">If the moon is sighted on this evening:</p>
-              <p class="sighting-detail">
-                1st of <strong>{{ monthEntry()?.name }}</strong> begins the
-                <strong>night of {{ formatShortDate(grid.date) }}</strong>
-              </p>
-              <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+              <h3 class="evening-title">Evening {{ getEveningTitle(grid.date) }}</h3>
             </div>
 
             <div class="info-divider"></div>
@@ -51,11 +40,22 @@
               <div class="local-vis vis-none">
                 <span class="lv-icon">📍</span>
                 <div class="lv-text">
-                  <a class="lv-link" href="#sidebar-top">Set your location</a>
+                  <button class="lv-link" (click)="locationDialogService.open()">Set your location</button>
                   <span class="lv-sub">to see local visibility</span>
                 </div>
               </div>
             }
+
+            <div class="info-divider"></div>
+
+            <div class="card-body">
+              <p class="sighting-line">If the moon is sighted on this evening:</p>
+              <p class="sighting-detail">
+                1st of <strong>{{ monthEntry()?.name }}</strong> begins the
+                <strong>night of {{ formatShortDate(grid.date) }}</strong>
+              </p>
+              <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+            </div>
           </div>
         </div>
         <!-- Map column -->

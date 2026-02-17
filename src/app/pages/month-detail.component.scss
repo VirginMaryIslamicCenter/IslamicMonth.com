@@ -123,7 +123,6 @@
   padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  margin-top: auto;
 }
 .lv-icon {
   width: 1.6rem;
@@ -138,7 +137,6 @@
 }
 .lv-label {
   font-size: 1rem;
-  color: #78909c;
 }
 .lv-result {
   font-size: 1.15rem;
@@ -147,7 +145,13 @@
 .lv-link {
   font-size: 1.1rem;
   color: #42a5f5;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
   text-decoration: none;
+  font-weight: 600;
+  
   &:hover {
     text-decoration: underline;
   }
@@ -158,38 +162,44 @@
 }
 
 .vis-A {
-  background: rgba(50, 220, 120, 0.06);
-  border-color: rgba(50, 220, 120, 0.2);
+  background: #2e7d32;
+  border-color: #43a047;
 }
+.vis-A .lv-label,
 .vis-A .lv-result {
-  color: #69f0ae;
+  color: #ffffff;
 }
 .vis-B {
-  background: rgba(255, 225, 50, 0.06);
-  border-color: rgba(255, 225, 50, 0.15);
+  background: #f57f17;
+  border-color: #f9a825;
 }
+.vis-B .lv-label,
 .vis-B .lv-result {
-  color: #ffee58;
+  color: #ffffff;
 }
 .vis-C {
-  background: rgba(255, 165, 50, 0.06);
-  border-color: rgba(255, 165, 50, 0.15);
+  background: #e65100;
+  border-color: #ef6c00;
 }
+.vis-C .lv-label,
 .vis-C .lv-result {
-  color: #ffa726;
+  color: #ffffff;
 }
 .vis-D {
-  background: rgba(255, 90, 70, 0.06);
-  border-color: rgba(255, 90, 70, 0.15);
+  background: #c62828;
+  border-color: #d32f2f;
 }
+.vis-D .lv-label,
 .vis-D .lv-result {
-  color: #ef5350;
+  color: #ffffff;
 }
 .vis-E {
-  background: rgba(255, 255, 255, 0.02);
+  background: #b71c1c;
+  border-color: #c62828;
 }
+.vis-E .lv-label,
 .vis-E .lv-result {
-  color: #607d8b;
+  color: #ffffff;
 }
 .vis-none {
   background: rgba(255, 255, 255, 0.02);

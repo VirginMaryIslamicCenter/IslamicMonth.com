@@ -9,6 +9,7 @@ import {
   IslamicMonthEntry,
 } from '../services/islamic-month.service';
 import { LocationService } from '../services/location.service';
+import { LocationDialogService } from '../services/location-dialog.service';
 import { MoonMapComponent } from '../components/moon-map.component';
 
 @Component({
@@ -22,6 +23,7 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly moonService = inject(IslamicMonthService);
   readonly locationService = inject(LocationService);
+  readonly locationDialogService = inject(LocationDialogService);
   private sub!: Subscription;
 
   readonly monthEntry = signal<IslamicMonthEntry | null>(null);
@@ -90,8 +92,9 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
 
   getEveningTitle(mapDate: Date): string {
     return mapDate.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
       day: 'numeric',
     });
   }
@@ -166,7 +169,7 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
       case 'D':
         return 'Only visible with optical aid (telescope / binoculars)';
       default:
-        return 'Moon not expected to be visible';
+        return 'Moon not visible';
     }
   }
 }
