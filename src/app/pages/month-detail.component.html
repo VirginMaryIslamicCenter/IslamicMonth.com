@@ -1,0 +1,68 @@
+@if (computing()) {
+  <div class="loading-section">
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+    <p class="loading-text">Computing visibility maps ({{ computingStep() }}/3)...</p>
+  </div>
+}
+
+@if (notFound()) {
+  <div class="not-found">
+    <p>Month not found. Redirecting...</p>
+  </div>
+}
+
+@if (visibilityGrids().length > 0) {
+  <div class="container maps-section">
+    @for (grid of visibilityGrids(); track grid.date.getTime(); let i = $index) {
+      <div class="row g-4 map-row">
+        <!-- Info column (first) -->
+        <div class="col-lg-4 col-xl-3">
+          <div class="info-card">
+            <div class="info-header">
+              <span class="crescent-icon">🌙</span>
+              <h3 class="evening-title">Evening of<br />{{ getEveningTitle(grid.date) }}</h3>
+            </div>
+
+            <div class="info-divider"></div>
+
+            <div class="card-body">
+              <p class="sighting-line">If the moon is sighted on this evening:</p>
+              <p class="sighting-detail">
+                1st of <strong>{{ monthEntry()?.name }}</strong> begins the
+                <strong>night of {{ formatShortDate(grid.date) }}</strong>
+              </p>
+              <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+            </div>
+
+            <div class="info-divider"></div>
+
+            <!-- Local visibility -->
+            @if (locationService.location(); as loc) {
+              <div class="local-vis" [class]="'local-vis vis-' + getLocalCategory(grid)">
+                <span class="lv-icon">{{ getLocalIcon(grid) }}</span>
+                <div class="lv-text">
+                  <span class="lv-label">{{ loc.displayName }}</span>
+                  <span class="lv-result">{{ getLocalDescription(grid) }}</span>
+                </div>
+              </div>
+            } @else {
+              <div class="local-vis vis-none">
+                <span class="lv-icon">📍</span>
+                <div class="lv-text">
+                  <a class="lv-link" href="#sidebar-top">Set your location</a>
+                  <span class="lv-sub">to see local visibility</span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+        <!-- Map column -->
+        <div class="col-lg-8 col-xl-9">
+          <app-moon-map [visibilityGrid]="grid" [userLocation]="locationService.location()" />
+        </div>
+      </div>
+    }
+  </div>
+}

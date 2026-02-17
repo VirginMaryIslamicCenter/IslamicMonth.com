@@ -1,0 +1,205 @@
+.loading-section {
+  max-width: 700px;
+  margin: 40px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+.progress-bar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1976d2, #42a5f5);
+  border-radius: 2px;
+  animation: progress 2s ease-in-out infinite;
+}
+@keyframes progress {
+  0% {
+    width: 0%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+.loading-text {
+  color: #78909c;
+  font-size: 0.9rem;
+}
+.not-found {
+  text-align: center;
+  padding: 60px 20px;
+  color: #90a4ae;
+}
+
+/* ===== Maps section ===== */
+.maps-section {
+  padding: 24px 0 60px;
+}
+
+.map-row {
+  align-items: stretch;
+  margin-bottom: 32px;
+}
+.map-row:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Info card ---- */
+.info-card {
+  background: linear-gradient(145deg, #0d1b2a, #142438);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 24px 20px 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.crescent-icon {
+  font-size: 1.4rem;
+}
+.evening-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.info-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.08), transparent);
+  margin: 16px 0;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+.sighting-line {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #607d8b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sighting-detail {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #b0bec5;
+  line-height: 1.6;
+}
+.sighting-detail strong {
+  color: #e0e0e0;
+}
+.sighting-action {
+  margin: 6px 0 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #64b5f6;
+}
+
+/* ---- Local visibility ---- */
+.local-vis {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: auto;
+}
+.lv-icon {
+  font-size: 1.6rem;
+  flex-shrink: 0;
+}
+.lv-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lv-label {
+  font-size: 1rem;
+  color: #78909c;
+}
+.lv-result {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.lv-link {
+  font-size: 1.1rem;
+  color: #42a5f5;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.lv-sub {
+  font-size: 0.9rem;
+  color: #607d8b;
+}
+
+.vis-A {
+  background: rgba(50, 220, 120, 0.06);
+  border-color: rgba(50, 220, 120, 0.2);
+}
+.vis-A .lv-result {
+  color: #69f0ae;
+}
+.vis-B {
+  background: rgba(255, 225, 50, 0.06);
+  border-color: rgba(255, 225, 50, 0.15);
+}
+.vis-B .lv-result {
+  color: #ffee58;
+}
+.vis-C {
+  background: rgba(255, 165, 50, 0.06);
+  border-color: rgba(255, 165, 50, 0.15);
+}
+.vis-C .lv-result {
+  color: #ffa726;
+}
+.vis-D {
+  background: rgba(255, 90, 70, 0.06);
+  border-color: rgba(255, 90, 70, 0.15);
+}
+.vis-D .lv-result {
+  color: #ef5350;
+}
+.vis-E {
+  background: rgba(255, 255, 255, 0.02);
+}
+.vis-E .lv-result {
+  color: #607d8b;
+}
+.vis-none {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 991px) {
+  .maps-section {
+    padding: 16px 0 40px;
+  }
+  .map-row {
+    margin-bottom: 24px;
+  }
+  .info-card {
+    margin-bottom: 12px;
+  }
+}

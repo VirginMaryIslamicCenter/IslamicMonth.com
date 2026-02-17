@@ -12,26 +12,8 @@ import * as topojson from 'topojson-client';
 @Component({
   selector: 'app-moon-map',
   imports: [CommonModule],
-  template: `
-    <div class="map-wrapper" #mapWrapper>
-      <canvas #mapCanvas></canvas>
-    </div>
-  `,
-  styles: `
-    .map-wrapper {
-      width: 100%;
-      position: relative;
-      background: #1a1a2e;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-    canvas {
-      display: block;
-      width: 100%;
-      height: auto;
-    }
-  `,
+  templateUrl: './moon-map.component.html',
+  styleUrl: './moon-map.component.scss',
 })
 export class MoonMapComponent {
   readonly visibilityGrid = input.required<VisibilityGrid>();
@@ -207,23 +189,23 @@ export class MoonMapComponent {
     const dayLabel = grid.dayLabel ?? 'Observation: After Sunset';
 
     // Draw dark overlay header band
-    const gradient = ctx.createLinearGradient(0, 0, 0, 110);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 140);
     gradient.addColorStop(0, 'rgba(0, 0, 0, 0.75)');
     gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, this.CANVAS_WIDTH, 110);
+    ctx.fillRect(0, 0, this.CANVAS_WIDTH, 140);
 
     // Title (Islamic month)
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 26px "Segoe UI", system-ui, sans-serif';
+    ctx.font = 'bold 39px "Segoe UI", system-ui, sans-serif';
     ctx.textAlign = 'left';
     ctx.textBaseline = 'top';
     ctx.fillText(titleText, 30, 14);
 
     // Date + day label
-    ctx.font = '24px "Segoe UI", system-ui, sans-serif';
+    ctx.font = '36px "Segoe UI", system-ui, sans-serif';
     ctx.fillStyle = '#b0bec5';
-    ctx.fillText(`${dateStr}  ·  ${dayLabel}  ·  After Sunset`, 30, 48);
+    ctx.fillText(`Evening of ${dateStr}`, 30, 60);
 
     // Moon age info (right side)
     ctx.textAlign = 'right';
@@ -260,12 +242,12 @@ export class MoonMapComponent {
 
     // Attribution
     ctx.textAlign = 'right';
-    ctx.font = '13px "Segoe UI", system-ui, sans-serif';
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = 'bold 28px "Segoe UI", system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
     ctx.fillText(
-      'Yallop (1997) Criterion · 4/9 Lag Best Time | IslamicMonth.com',
-      this.CANVAS_WIDTH - 20,
-      this.CANVAS_HEIGHT - 15,
+      'IslamicMonth.com',
+      this.CANVAS_WIDTH - 25,
+      this.CANVAS_HEIGHT - 60,
     );
   }
 
