@@ -92,13 +92,19 @@ export class IslamicMonthService {
     // Start search from 30 days before fromDate to include the current month
     let searchFrom = new Date(fromDate.getTime() - 30 * 24 * 60 * 60 * 1000);
 
+    // Only detect the first month from the calendar API.
+    // All subsequent months are derived from the fixed Islamic month sequence,
+    // which eliminates duplicate-month bugs caused by calendar boundary differences.
+    let currentMonthIndex = -1;
+    let currentYear = 0;
+
     for (let i = 0; i < count; i++) {
       const nm = SearchMoonPhase(0, searchFrom, 35);
       if (!nm) break;
 
       const newMoonDate = nm.date;
 
-      // Map dates: conjuction day, +1, +2
+      // Map dates: conjunction day, +1, +2
       const day0 = new Date(
         newMoonDate.getFullYear(),
         newMoonDate.getMonth(),
@@ -107,20 +113,41 @@ export class IslamicMonthService {
       const day1 = new Date(day0.getTime() + 1 * 24 * 60 * 60 * 1000);
       const day2 = new Date(day0.getTime() + 2 * 24 * 60 * 60 * 1000);
 
-      // Get Islamic month/year — check well after new moon to ensure we're in the new month.
-      // Some browsers/calendars need more offset than others to cross the month boundary.
-      const checkDate = new Date(day0.getTime() + 5 * 24 * 60 * 60 * 1000);
-      const hijri = this.getIslamicDate(checkDate);
+      let monthName: string;
+      let year: number;
 
-      // Skip duplicate: if the same month+year as the previous entry, it means the
-      // check date still landed in the previous Islamic month on this device.
-      const prev = entries[entries.length - 1];
-      if (prev && prev.name === hijri.monthName && prev.year === hijri.year) {
-        // Move search forward and try next new moon
-        searchFrom = new Date(nm.date.getTime() + 2 * 24 * 60 * 60 * 1000);
-        i--; // Don't count this iteration
-        continue;
+      if (currentMonthIndex === -1) {
+        // First month: detect from calendar API (check 5 days after new moon)
+        const checkDate = new Date(day0.getTime() + 5 * 24 * 60 * 60 * 1000);
+        const hijri = this.getIslamicDate(checkDate);
+        currentMonthIndex = ISLAMIC_MONTH_NAMES.indexOf(
+          hijri.monthName as (typeof ISLAMIC_MONTH_NAMES)[number],
+        );
+        if (currentMonthIndex === -1) currentMonthIndex = 0; // fallback
+        currentYear = hijri.year;
+
+        // If the day is late in the month (>15), it means the check date hasn't
+        // crossed into the new Islamic month yet — the new moon is for the NEXT month.
+        // If the day is early (1-15), we've correctly entered the new month.
+        if (hijri.day > 15) {
+          currentMonthIndex++;
+          if (currentMonthIndex >= ISLAMIC_MONTH_NAMES.length) {
+            currentMonthIndex = 0;
+            currentYear++;
+          }
+        }
+      } else {
+        // Subsequent months: advance to the next month in the fixed sequence.
+        // If we were on Dhul Hijjah (index 11), wrap to Muharram (index 0) and increment year.
+        currentMonthIndex++;
+        if (currentMonthIndex >= ISLAMIC_MONTH_NAMES.length) {
+          currentMonthIndex = 0;
+          currentYear++;
+        }
       }
+
+      monthName = ISLAMIC_MONTH_NAMES[currentMonthIndex];
+      year = currentYear;
 
       // Gregorian label for the new moon date
       const gregLabel = newMoonDate.toLocaleDateString('en-US', {
@@ -129,12 +156,12 @@ export class IslamicMonthService {
       });
 
       entries.push({
-        name: hijri.monthName,
-        year: hijri.year,
+        name: monthName,
+        year,
         gregorianLabel: gregLabel,
         newMoonDate,
         mapDates: [day0, day1, day2],
-        routeSlug: this.toRouteSlug(hijri.monthName),
+        routeSlug: this.toRouteSlug(monthName),
       });
 
       // Move search forward past this new moon
