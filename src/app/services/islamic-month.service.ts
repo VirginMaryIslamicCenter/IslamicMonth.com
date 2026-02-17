@@ -194,10 +194,58 @@ export class IslamicMonthService {
       const year = parseInt(yearPart?.value ?? '0', 10);
       const day = parseInt(dayPart?.value ?? '1', 10);
 
+      // If monthName is empty, the Intl API fell back to Gregorian (unsupported calendar).
+      // Use our algorithmic fallback instead.
+      if (!monthName || year === 0) {
+        return this.getIslamicDateFallback(date);
+      }
+
       return { monthName, year, day };
     } catch {
-      return { monthName: 'Unknown', year: 0, day: 1 };
+      return this.getIslamicDateFallback(date);
     }
+  }
+
+  /**
+   * Algorithmic fallback for Islamic date when Intl islamic-umalqura is not supported.
+   * Uses the Kuwaiti algorithm (tabular Islamic calendar) as an approximation.
+   */
+  private getIslamicDateFallback(date: Date): { monthName: string; year: number; day: number } {
+    // Julian Day Number
+    const y = date.getFullYear();
+    const m = date.getMonth() + 1;
+    const d = date.getDate();
+    const jd =
+      Math.floor(365.25 * (y + 4716)) +
+      Math.floor(30.6001 * (m + 1)) +
+      d -
+      1524.5 -
+      (y > 1582 || (y === 1582 && m > 10) || (y === 1582 && m === 10 && d > 15)
+        ? Math.floor(y / 100) - Math.floor(y / 400) - 2
+        : 0);
+
+    // Convert JD to Islamic (Kuwaiti/tabular algorithm)
+    const l = Math.floor(jd - 1948439.5) + 10632;
+    const n = Math.floor((l - 1) / 10631);
+    const remainder = l - 10631 * n + 354;
+    const j =
+      Math.floor((10985 - remainder) / 5316) * Math.floor((50 * remainder) / 17719) +
+      Math.floor(remainder / 5670) * Math.floor((43 * remainder) / 15238);
+    const adjustedL =
+      remainder -
+      Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+      Math.floor(j / 16) * Math.floor((15238 * j) / 43) +
+      29;
+    const month = Math.floor((24 * adjustedL) / 709);
+    const day = adjustedL - Math.floor((709 * month) / 24);
+    const year = 30 * n + j - 30;
+
+    const monthIndex = Math.max(0, Math.min(11, month - 1));
+    return {
+      monthName: ISLAMIC_MONTH_NAMES[monthIndex],
+      year,
+      day,
+    };
   }
 
   /**
@@ -214,6 +262,16 @@ export class IslamicMonthService {
         .trim();
 
     const n = norm(intlName);
+
+    // Detect Gregorian fallback — if the Intl API returned a Gregorian month name,
+    // it means the islamic-umalqura calendar is not supported on this device.
+    const gregorianMonths = [
+      'january', 'february', 'march', 'april', 'may', 'june',
+      'july', 'august', 'september', 'october', 'november', 'december',
+    ];
+    if (gregorianMonths.includes(n)) {
+      return ''; // Signal to caller that Intl failed
+    }
 
     // Order matters: check specific patterns first
     if (n.includes('muharram')) return 'Muharram';
