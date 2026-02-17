@@ -266,8 +266,18 @@ export class IslamicMonthService {
     // Detect Gregorian fallback — if the Intl API returned a Gregorian month name,
     // it means the islamic-umalqura calendar is not supported on this device.
     const gregorianMonths = [
-      'january', 'february', 'march', 'april', 'may', 'june',
-      'july', 'august', 'september', 'october', 'november', 'december',
+      'january',
+      'february',
+      'march',
+      'april',
+      'may',
+      'june',
+      'july',
+      'august',
+      'september',
+      'october',
+      'november',
+      'december',
     ];
     if (gregorianMonths.includes(n)) {
       return ''; // Signal to caller that Intl failed
