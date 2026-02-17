@@ -16,7 +16,8 @@
 @if (visibilityGrids().length > 0) {
   <div class="container maps-section">
     @for (grid of visibilityGrids(); track grid.date.getTime(); let i = $index) {
-      <div class="row g-4 map-row">
+      <div class="mobile-card">
+        <div class="row g-4 map-row">
         <!-- Info column (first) -->
         <div class="col-lg-4 col-xl-3">
           <div class="info-card">
@@ -29,7 +30,7 @@
 
             <!-- Local visibility -->
             @if (locationService.location(); as loc) {
-              <div class="local-vis" [class]="'local-vis vis-' + getLocalCategory(grid)">
+              <div class="local-vis" [class]="'local-vis vis-' + getLocalCategory(grid)" (click)="locationDialogService.open()">
                 <img class="lv-icon" [src]="getLocalIcon(grid)" alt="Visibility" />
                 <div class="lv-text">
                   <span class="lv-label">{{ loc.displayName }}</span>
@@ -37,10 +38,10 @@
                 </div>
               </div>
             } @else {
-              <div class="local-vis vis-none">
+              <div class="local-vis vis-none" (click)="locationDialogService.open()">
                 <span class="lv-icon">📍</span>
                 <div class="lv-text">
-                  <button class="lv-link" (click)="locationDialogService.open()">Set your location</button>
+                  <span class="lv-link">Set your location</span>
                   <span class="lv-sub">to see local visibility</span>
                 </div>
               </div>
@@ -61,6 +62,7 @@
         <!-- Map column -->
         <div class="col-lg-8 col-xl-9">
           <app-moon-map [visibilityGrid]="grid" [userLocation]="locationService.location()" />
+        </div>
         </div>
       </div>
     }

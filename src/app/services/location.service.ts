@@ -55,10 +55,18 @@ export class LocationService {
     const state = iso
       ? iso.split('-').pop()!
       : address['state'] || address['province'] || address['region'] || '';
-    // Use country_code (e.g. "us" → "US") if available, else full name
-    const country = address['country_code']
-      ? address['country_code'].toUpperCase()
-      : address['country'] || '';
+    
+    // If only country (no city or state), use full country name
+    // Otherwise use country code abbreviation
+    let country: string;
+    if (!city && !state) {
+      country = address['country'] || '';
+    } else {
+      country = address['country_code']
+        ? address['country_code'].toUpperCase()
+        : address['country'] || '';
+    }
+    
     const parts = [city, state, country].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : fallback;
   }

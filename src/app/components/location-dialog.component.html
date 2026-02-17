@@ -24,14 +24,32 @@
       <form class="search-form" (ngSubmit)="searchLocation()">
         <label class="search-label">Enter a location</label>
         <div class="search-input-wrapper">
-          <input
-            type="text"
-            class="search-input"
-            placeholder="City, state, country…"
-            [(ngModel)]="locationQuery"
-            name="locationQuery"
-            [disabled]="searching()"
-          />
+          <div class="autocomplete-container">
+            <input
+              type="text"
+              class="search-input"
+              placeholder="City, state, country…"
+              [(ngModel)]="locationQuery"
+              (input)="onInputChange()"
+              name="locationQuery"
+              [disabled]="searching()"
+              autocomplete="off"
+            />
+            @if (showSuggestions() && suggestions().length > 0) {
+              <div class="suggestions-dropdown">
+                @for (suggestion of suggestions(); track suggestion.place_id) {
+                  <button
+                    type="button"
+                    class="suggestion-item"
+                    (click)="selectSuggestion(suggestion)"
+                  >
+                    <span class="suggestion-icon">📍</span>
+                    <span class="suggestion-text">{{ getDisplayName(suggestion) }}</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
           <button 
             type="submit" 
             class="search-btn" 

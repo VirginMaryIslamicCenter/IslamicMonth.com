@@ -18,6 +18,10 @@ export class LocationDialogComponent {
   readonly searching = signal(false);
   readonly gettingBrowser = signal(false);
   readonly locationError = signal<string | null>(null);
+  readonly suggestions = signal<any[]>([]);
+  readonly showSuggestions = signal(false);
+
+  private searchTimeout: any = null;
 
   async getBrowserLocation() {
     this.gettingBrowser.set(true);
@@ -72,5 +76,63 @@ export class LocationDialogComponent {
 
   closeDialog() {
     this.close.emit();
+  }
+
+  onInputChange() {
+    const query = this.locationQuery.trim();
+    
+    // Clear previous timeout
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    if (!query || query.length < 3) {
+      this.suggestions.set([]);
+      this.showSuggestions.set(false);
+      return;
+    }
+
+    // Debounce search
+    this.searchTimeout = setTimeout(() => {
+      this.fetchSuggestions(query);
+    }, 300);
+  }
+
+  async fetchSuggestions(query: string) {
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=${encodeURIComponent(query)}`;
+      const res = await fetch(url, {
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json();
+
+      if (data?.length > 0) {
+        this.suggestions.set(data);
+        this.showSuggestions.set(true);
+      } else {
+        this.suggestions.set([]);
+        this.showSuggestions.set(false);
+      }
+    } catch {
+      this.suggestions.set([]);
+      this.showSuggestions.set(false);
+    }
+  }
+
+  selectSuggestion(suggestion: any) {
+    const loc: UserLocation = {
+      lat: parseFloat(suggestion.lat),
+      lng: parseFloat(suggestion.lon),
+      displayName: this.locationService.formatAddress(suggestion.address, suggestion.display_name),
+    };
+    this.locationService.setLocation(loc);
+    this.locationQuery = '';
+    this.suggestions.set([]);
+    this.showSuggestions.set(false);
+    this.close.emit();
+  }
+
+  getDisplayName(suggestion: any): string {
+    return this.locationService.formatAddress(suggestion.address, suggestion.display_name);
   }
 }
