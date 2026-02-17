@@ -63,6 +63,25 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
+.card-date-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+
+.calendar-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  opacity: 1;
+}
+
 .crescent-icon {
   width: 1.6rem;
   height: 1.6rem;
@@ -297,7 +316,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 16px;
     padding: 20px;
-    margin-bottom: 56px;
+    margin: 0 15px 56px;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
 
     &:last-child {
@@ -310,11 +329,20 @@
   }
 
   .info-card {
-    margin-bottom: 16px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: none;
     padding: 16px 14px 14px;
+  }
+
+  .card-date-title {
+    font-size: 1.15rem;
+    margin-bottom: 12px;
+  }
+
+  .calendar-icon {
+    width: 2rem;
+    height: 2rem;
   }
 
   .lv-evening {

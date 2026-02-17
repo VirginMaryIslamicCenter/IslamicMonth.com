@@ -17,6 +17,10 @@
   <div class="container maps-section">
     @for (grid of displayGrids(); track grid.date.getTime(); let i = $index) {
       <div class="mobile-card">
+        <h2 class="card-date-title">
+          <img class="calendar-icon" src="/assets/icons/calendar.svg" alt="Calendar" />
+          Evening of {{ getEveningTitle(grid.date) }}
+        </h2>
         <div class="row g-4 map-row">
           <!-- Info column (first) -->
           <div class="col-lg-4 col-xl-3">
@@ -28,10 +32,6 @@
                   [class]="'local-vis vis-' + getLocalCategory(grid)"
                   (click)="locationDialogService.open()"
                 >
-                  <div class="lv-header">
-                    <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
-                    <span class="lv-evening">Evening {{ getEveningTitle(grid.date) }}</span>
-                  </div>
                   <div class="lv-location">
                     <img class="location-icon" src="/assets/icons/location.svg" alt="Location" />
                     {{ loc.displayName }}
@@ -45,10 +45,6 @@
                 </div>
               } @else {
                 <div class="local-vis vis-none" (click)="locationDialogService.open()">
-                  <div class="lv-header">
-                    <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
-                    <span class="lv-evening">Evening {{ getEveningTitle(grid.date) }}</span>
-                  </div>
                   <div class="lv-body">
                     <img class="lv-icon" src="/assets/icons/location.svg" alt="Location" />
                     <div class="lv-text">
