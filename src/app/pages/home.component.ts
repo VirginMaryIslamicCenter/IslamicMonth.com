@@ -47,6 +47,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
       const defaultRoute = this.moonService.getNearestMonthRoute(this.islamicMonths());
       this.router.navigateByUrl(defaultRoute, { replaceUrl: true });
     }
+
+    // Request browser geolocation if no location is saved
+    if (!this.locationService.location()) {
+      this.locationService.requestBrowserLocation();
+    }
   }
 
   ngAfterViewInit() {
@@ -111,7 +116,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.locationError.set(null);
 
     try {
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`;
+      const url = `https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=1&q=${encodeURIComponent(query)}`;
       const res = await fetch(url, {
         headers: { Accept: 'application/json' },
       });
@@ -122,7 +127,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         const loc: UserLocation = {
           lat: parseFloat(result.lat),
           lng: parseFloat(result.lon),
-          displayName: result.display_name?.split(',').slice(0, 3).join(',') || query,
+          displayName: this.locationService.formatAddress(result.address, query),
         };
         this.locationService.setLocation(loc);
         this.locationQuery = '';

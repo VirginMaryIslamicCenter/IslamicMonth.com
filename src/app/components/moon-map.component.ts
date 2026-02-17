@@ -40,6 +40,8 @@ export class MoonMapComponent {
   constructor() {
     effect(() => {
       const grid = this.visibilityGrid();
+      // Track userLocation so the map re-renders when location changes
+      this.userLocation();
       if (grid) {
         this.loadAndRender(grid);
       }
@@ -244,11 +246,7 @@ export class MoonMapComponent {
     ctx.textAlign = 'right';
     ctx.font = 'bold 28px "Segoe UI", system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    ctx.fillText(
-      'IslamicMonth.com',
-      this.CANVAS_WIDTH - 25,
-      this.CANVAS_HEIGHT - 60,
-    );
+    ctx.fillText('IslamicMonth.com', this.CANVAS_WIDTH - 25, this.CANVAS_HEIGHT - 60);
   }
 
   private drawLegend(ctx: CanvasRenderingContext2D) {

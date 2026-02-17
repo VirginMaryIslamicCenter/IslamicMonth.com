@@ -142,15 +142,15 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
     const cat = this.getLocalCategory(grid);
     switch (cat) {
       case 'A':
-        return '👁️';
+        return '/assets/icons/easily-visible.svg';
       case 'B':
-        return '👁️';
+        return '/assets/icons/visible-conditions.svg';
       case 'C':
-        return '🔭';
+        return '/assets/icons/optical-aid.svg';
       case 'D':
-        return '🔭';
+        return '/assets/icons/optical-aid.svg';
       default:
-        return '🚫';
+        return '/assets/icons/not-visible.svg';
     }
   }
 

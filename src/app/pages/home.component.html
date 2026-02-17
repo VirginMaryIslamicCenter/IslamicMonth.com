@@ -1,68 +1,71 @@
 <div class="shell">
   <!-- Top header bar -->
   <header class="top-bar">
-    <div class="top-left">
-      <h1 class="brand"><span class="moon-icon">🌙</span> IslamicMonth</h1>
-      <span class="tagline">Yallop criterion · Crescent visibility worldwide</span>
-    </div>
-    <div class="top-right" id="sidebar-top">
-      <label class="loc-label">📍</label>
-      @if (locationService.location(); as loc) {
-        <div class="location-display">
-          <span class="location-name">{{ loc.displayName }}</span>
-          <button class="location-clear" (click)="clearLocation()" title="Remove location">
-            ✕
-          </button>
+    <div class="container">
+      <div class="top-bar-inner">
+        <div class="top-left">
+          <img class="brand-logo" src="/assets/icons/logo.svg" alt="IslamicMonth" />
         </div>
-      } @else {
-        <form class="location-form" (ngSubmit)="searchLocation()">
-          <input
-            type="text"
-            class="location-input"
-            placeholder="City, state, country…"
-            [(ngModel)]="locationQuery"
-            name="locationQuery"
-          />
-          <button type="submit" class="location-search-btn" [disabled]="searching()">
-            {{ searching() ? '…' : '→' }}
-          </button>
-        </form>
-      }
-      @if (locationError()) {
-        <span class="location-error">{{ locationError() }}</span>
-      }
+        <div class="top-right" id="sidebar-top">
+          <label class="loc-label">📍</label>
+          @if (locationService.location(); as loc) {
+            <div class="location-display">
+              <span class="location-name">{{ loc.displayName }}</span>
+              <button class="location-clear" (click)="clearLocation()" title="Remove location">
+                ✕
+              </button>
+            </div>
+          } @else {
+            <form class="location-form" (ngSubmit)="searchLocation()">
+              <input
+                type="text"
+                class="location-input"
+                placeholder="City, state, country…"
+                [(ngModel)]="locationQuery"
+                name="locationQuery"
+              />
+              <button type="submit" class="location-search-btn" [disabled]="searching()">
+                {{ searching() ? '…' : '→' }}
+              </button>
+            </form>
+          }
+          @if (locationError()) {
+            <span class="location-error">{{ locationError() }}</span>
+          }
+        </div>
+      </div>
     </div>
   </header>
 
   <!-- Horizontal scrollable month strip -->
   <nav class="month-strip">
-    <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">
-      ‹
-    </button>
-    <div
-      class="strip-track"
-      #monthTrack
-      (mousedown)="onDragStart($event)"
-      (touchstart)="onDragStart($event)"
-    >
-      @for (month of islamicMonths(); track month.newMoonDate.getTime()) {
-        <a
-          class="month-box"
-          [routerLink]="['/', month.year + 'AH', month.routeSlug]"
-          routerLinkActive="active"
+    <div class="container">
+      <div class="strip-inner">
+        <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">‹</button>
+        <div
+          class="strip-track"
+          #monthTrack
+          (mousedown)="onDragStart($event)"
+          (touchstart)="onDragStart($event)"
         >
-          @if (month.name === 'Shawwal') {
-            <span class="eid-badge fitr">🎆 Eid al-Fitr!</span>
+          @for (month of islamicMonths(); track month.newMoonDate.getTime()) {
+            <a
+              class="month-box"
+              [routerLink]="['/', month.year + 'AH', month.routeSlug]"
+              routerLinkActive="active"
+            >
+              @if (month.name === 'Shawwal') {
+                <span class="eid-badge fitr">🎆 Eid al-Fitr!</span>
+              }
+              <span class="mb-name">{{ month.name }}</span>
+              <span class="mb-meta">{{ month.year }} AH</span>
+              <span class="mb-greg">{{ month.gregorianLabel }}</span>
+            </a>
           }
-          <span class="mb-name">{{ month.name }}</span>
-          <span class="mb-meta">{{ month.year }} AH</span>
-          <span class="mb-greg">{{ month.gregorianLabel }}</span>
-        </a>
-      }
+        </div>
+        <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">›</button>
+      </div>
     </div>
-    <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">
-      ›
-    </button>
   </nav>
 
   <!-- Main content area -->

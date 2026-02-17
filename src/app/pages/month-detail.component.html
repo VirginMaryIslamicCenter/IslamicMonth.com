@@ -21,7 +21,7 @@
         <div class="col-lg-4 col-xl-3">
           <div class="info-card">
             <div class="info-header">
-              <span class="crescent-icon">🌙</span>
+              <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
               <h3 class="evening-title">Evening of<br />{{ getEveningTitle(grid.date) }}</h3>
             </div>
 
@@ -41,7 +41,7 @@
             <!-- Local visibility -->
             @if (locationService.location(); as loc) {
               <div class="local-vis" [class]="'local-vis vis-' + getLocalCategory(grid)">
-                <span class="lv-icon">{{ getLocalIcon(grid) }}</span>
+                <img class="lv-icon" [src]="getLocalIcon(grid)" alt="Visibility" />
                 <div class="lv-text">
                   <span class="lv-label">{{ loc.displayName }}</span>
                   <span class="lv-result">{{ getLocalDescription(grid) }}</span>

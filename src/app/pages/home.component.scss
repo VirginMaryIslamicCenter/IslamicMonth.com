@@ -9,13 +9,15 @@
 
 /* ---------- top bar ---------- */
 .top-bar {
+  background: #101c2c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 0;
+}
+.top-bar-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 14px 24px;
-  background: #101c2c;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   flex-wrap: wrap;
 }
 .top-left {
@@ -30,8 +32,11 @@
   margin: 0;
   white-space: nowrap;
 }
-.moon-icon {
-  margin-right: 4px;
+.brand-logo {
+  height: 2.8rem;
+  width: auto;
+  object-fit: contain;
+  vertical-align: middle;
 }
 .tagline {
   font-size: 0.75rem;
@@ -124,11 +129,13 @@
 
 /* ---------- month strip ---------- */
 .month-strip {
-  display: flex;
-  align-items: stretch;
   background: #0f1923;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   position: relative;
+}
+.strip-inner {
+  display: flex;
+  align-items: stretch;
 }
 .strip-arrow {
   flex-shrink: 0;
@@ -226,10 +233,15 @@
 /* ---------- mobile ---------- */
 @media (max-width: 700px) {
   .top-bar {
+    padding: 12px 0;
+  }
+  .top-bar-inner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
-    padding: 12px 14px;
+  }
+  .brand-logo {
+    height: 3.5rem;
   }
   .top-right {
     width: 100%;

@@ -1,0 +1,151 @@
+#
+#
+# make sure you elevate permissions on the server so that we can run the IIS app
+# cmd stop and start command:
+# NOTE: This needs to be run in CMD and not Powershell
+# sc config actions.runner.VirginMaryIslamicCenter.sqlstaging-vmic obj= "NT AUTHORITY\SYSTEM" type= own
+# sc config actions.runner.VirginMaryIslamicCenter-Website.SQL-MAIN obj= "NT AUTHORITY\SYSTEM" type= own
+# (get the name from the Windows Services window)
+# ^ Make sure you restart the service or server after running this command
+#
+
+name: Deploy to All Servers
+
+env:
+  IIS_SITE_NAME: 'IslamicMonth'
+  APP_POOL: 'IslamicMonth'
+  FINAL_DIR: 'd:\web.net\IslamicMonth'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+        runner: [sqlstaging-vmic, SQL-MAIN]
+
+    steps:
+      - uses: actions/checkout@v6
+
+      # ==========================================
+      # Install Node and NPM dependencies
+      # ==========================================
+
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: npm install
+        run: |
+          npm ci --ignore-scripts
+
+      # ==========================================
+      # BUILD ANGULAR
+      # ==========================================
+
+      - name: build angular
+        run: |
+          npm run build
+        env:
+          NODE_ENV: production
+
+      # ==========================================
+      # DEPLOY
+      # ==========================================
+
+      - name: STOP APP (Make sure you give elevated permissions as listed in main.yml at the top)
+        if: always()
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 6
+          max_attempts: 4
+          retry_on: error
+          command: |
+            import-module WebAdministration
+
+            c:\windows\system32\inetsrv\appcmd stop site /site.name:${{ env.IIS_SITE_NAME }}
+            Start-Sleep -Seconds 1
+            if((Get-WebAppPoolState -Name "${{ env.APP_POOL }}").Value -ne 'Stopped'){
+              c:\windows\System32\inetsrv\appcmd recycle apppool /apppool.name:"${{ env.APP_POOL }}"
+              Write-Output ('Stopping Application Pool: {0}' -f "${{ env.APP_POOL }}")
+              Stop-WebAppPool -Name "${{ env.APP_POOL }}"
+            }
+
+            Start-Sleep -Seconds 1
+
+      - name: COPY MAINTENANCE PAGE TO DEPLOYMENT DIRECTORY
+        run: |
+          Copy-Item ".github\workflows\maintenance.html" "${{ env.FINAL_DIR }}\app_offline.htm" -Force
+          Write-Output "Maintenance page deployed (app_offline.htm)"
+
+      - name: CLEAR FINAL DESTINATION DIRECTORY
+        run: |
+          Write-Output "Clearing existing content from ${{ env.FINAL_DIR }} (excluding app_offline.htm)..."
+
+          # Create temporary empty directory for robocopy mirror operation
+          $tempDir = Join-Path $env:TEMP "empty_$(Get-Random)"
+          New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
+
+          # Use robocopy to mirror empty directory to final destination
+          # /MIR = mirror (delete files not in source)
+          # /XF = exclude files (app_offline.htm)
+          # /MT:32 = multi-threaded for speed
+          # /R:0 = 0 retries on locked files
+          # /W:0 = 0 seconds wait between retries
+          # /NFL /NDL /NJH /NJS /NC /NS /NP = minimal logging for speed
+          robocopy $tempDir "${{ env.FINAL_DIR }}" /MIR /XF app_offline.htm /MT:32 /R:0 /W:0 /NFL /NDL /NJH /NJS /NC /NS /NP
+
+          # Clean up temp directory
+          Remove-Item $tempDir -Force -ErrorAction SilentlyContinue
+
+          # Robocopy returns 0-7 for success (8+ is error)
+          if ($LASTEXITCODE -le 7) {
+            Write-Output "Directory cleared successfully (locked files were skipped automatically)"
+            exit 0
+          } else {
+            Write-Output "Some errors occurred during cleanup, but continuing with deployment"
+            exit $LASTEXITCODE
+          }
+
+      - name: COPY FILES
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 15
+          max_attempts: 10
+          retry_on: error
+          command: |
+            robocopy "dist\islamic-month\browser" "${{ env.FINAL_DIR }}" /E /MT:32 /NFL /NDL /NJH /NJS /NC /NS /NP
+            if ($LASTEXITCODE -le 7) { exit 0 } else { exit $LASTEXITCODE }
+
+      - name: REMOVE MAINTENANCE PAGE
+        if: always()
+        run: |
+          $maintenanceFile = "${{ env.FINAL_DIR }}\app_offline.htm"
+          if (Test-Path $maintenanceFile) {
+            Remove-Item $maintenanceFile -Force
+            Write-Output "Maintenance page removed (app_offline.htm)"
+          }
+
+      - name: START APP - Deploy to IIS
+        if: always()
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 15
+          max_attempts: 10
+          retry_on: error
+          command: |
+            import-module WebAdministration
+
+            if((Get-WebAppPoolState -Name "${{ env.APP_POOL }}").Value -ne 'Started'){
+              Write-Output ('Starting Application Pool: {0}' -f "${{ env.APP_POOL }}")
+              Start-WebAppPool -Name "${{ env.APP_POOL }}"
+            }
+
+            c:\windows\system32\inetsrv\appcmd start site /site.name:${{ env.IIS_SITE_NAME }}

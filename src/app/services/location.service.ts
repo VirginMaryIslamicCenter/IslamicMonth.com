@@ -38,6 +38,22 @@ export class LocationService {
   }
 
   /**
+   * Build a clean "City, State, Country" or "City, Country" string
+   * from Nominatim's structured address object, using abbreviations.
+   */
+  formatAddress(address: Record<string, string> | undefined, fallback: string): string {
+    if (!address) return fallback;
+    const city = address['city'] || address['town'] || address['village'] || address['hamlet'] || address['municipality'] || '';
+    // Use ISO 3166-2 state code (e.g. "US-CA" → "CA") if available, else full name
+    const iso = address['ISO3166-2-lvl4'] || address['ISO3166-2-lvl6'] || '';
+    const state = iso ? iso.split('-').pop()! : (address['state'] || address['province'] || address['region'] || '');
+    // Use country_code (e.g. "us" → "US") if available, else full name
+    const country = address['country_code'] ? address['country_code'].toUpperCase() : (address['country'] || '');
+    const parts = [city, state, country].filter(Boolean);
+    return parts.length > 0 ? parts.join(', ') : fallback;
+  }
+
+  /**
    * Request browser geolocation, reverse-geocode via Nominatim, and set location.
    * Resolves to true if location was obtained, false otherwise.
    */
@@ -60,12 +76,10 @@ export class LocationService {
       // Reverse-geocode via Nominatim
       let displayName = `${latitude.toFixed(2)}, ${longitude.toFixed(2)}`;
       try {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`;
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&lat=${latitude}&lon=${longitude}`;
         const res = await fetch(url, { headers: { Accept: 'application/json' } });
         const data = await res.json();
-        if (data?.display_name) {
-          displayName = data.display_name.split(',').slice(0, 3).join(',');
-        }
+        displayName = this.formatAddress(data?.address, displayName);
       } catch {
         /* use fallback coordinates display name */
       }
