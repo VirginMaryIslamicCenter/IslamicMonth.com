@@ -126,16 +126,17 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
     const dayAfter = new Date(mapDate);
     dayAfter.setDate(dayAfter.getDate() + 1);
     const dayStr = dayAfter.toLocaleDateString('en-US', {
+      weekday: 'long',
       month: 'long',
       day: 'numeric',
       year: 'numeric',
     });
 
     if (entry.name === 'Ramadan') {
-      return `Fasting will begin on ${dayStr}`;
+      return `Fasting would therefore begin on ${dayStr}`;
     }
     if (entry.name === 'Shawwal') {
-      return `Eid Prayers will be on ${dayStr}`;
+      return `Eid Prayers would therefore be on ${dayStr}`;
     }
     return `Day of ${dayStr}`;
   }
