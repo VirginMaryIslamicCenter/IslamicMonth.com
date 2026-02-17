@@ -43,12 +43,22 @@ export class LocationService {
    */
   formatAddress(address: Record<string, string> | undefined, fallback: string): string {
     if (!address) return fallback;
-    const city = address['city'] || address['town'] || address['village'] || address['hamlet'] || address['municipality'] || '';
+    const city =
+      address['city'] ||
+      address['town'] ||
+      address['village'] ||
+      address['hamlet'] ||
+      address['municipality'] ||
+      '';
     // Use ISO 3166-2 state code (e.g. "US-CA" → "CA") if available, else full name
     const iso = address['ISO3166-2-lvl4'] || address['ISO3166-2-lvl6'] || '';
-    const state = iso ? iso.split('-').pop()! : (address['state'] || address['province'] || address['region'] || '');
+    const state = iso
+      ? iso.split('-').pop()!
+      : address['state'] || address['province'] || address['region'] || '';
     // Use country_code (e.g. "us" → "US") if available, else full name
-    const country = address['country_code'] ? address['country_code'].toUpperCase() : (address['country'] || '');
+    const country = address['country_code']
+      ? address['country_code'].toUpperCase()
+      : address['country'] || '';
     const parts = [city, state, country].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : fallback;
   }
