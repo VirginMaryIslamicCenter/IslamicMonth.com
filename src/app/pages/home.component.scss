@@ -49,9 +49,11 @@
   gap: 8px;
   flex-shrink: 1;
   min-width: 0;
+  overflow: hidden;
 }
 .loc-label {
-  font-size: 0.95rem;
+  width: 1.2rem;
+  height: 1.2rem;
   flex-shrink: 0;
 }
 
@@ -77,11 +79,13 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 6px 12px;
+  padding: 6px 4px 6px 10px;
   background: rgba(25, 118, 210, 0.12);
   border: 1px solid rgba(25, 118, 210, 0.25);
   border-radius: 7px;
   max-width: 300px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .location-name {
@@ -90,6 +94,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
 }
 
 .location-change {
@@ -103,11 +109,23 @@
   border-radius: 5px;
   transition: all 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   
   &:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.2);
   }
+}
+.change-icon {
+  display: none;
+  width: 16px;
+  height: 16px;
+}
+.change-text {
+  display: inline;
 }
 
 /* ---------- month strip ---------- */
@@ -219,19 +237,43 @@
     padding: 12px 0;
   }
   .top-bar-inner {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 10px;
   }
+  .top-left {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+  }
   .brand-logo {
-    height: 3.5rem;
+    height: 2.4rem;
+    max-width: 100%;
+    object-fit: contain;
   }
   .top-right {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-end;
+    overflow: hidden;
   }
   .location-display {
-    max-width: unset;
+    max-width: none;
     flex: 1;
+    overflow: hidden;
+  }
+  .location-name {
+    flex: 1;
+    min-width: 0;
+  }
+  .change-text {
+    display: none;
+  }
+  .change-icon {
+    display: block;
+  }
+  .location-change {
+    padding: 4px 6px;
   }
   .month-box {
     padding: 8px 14px;
