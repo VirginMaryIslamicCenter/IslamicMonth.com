@@ -49,6 +49,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     // Request browser geolocation if no location is saved
     if (!this.locationService.location()) {
+      // Don't await - let it happen in background
       this.locationService.requestBrowserLocation();
     }
   }

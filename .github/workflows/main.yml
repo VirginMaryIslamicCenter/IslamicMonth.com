@@ -12,8 +12,8 @@
 name: Deploy to All Servers
 
 env:
-  IIS_SITE_NAME: 'IslamicMonth'
-  APP_POOL: 'IslamicMonth'
+  IIS_SITE_NAME: 'IslamicMonth.com'
+  APP_POOL: 'IslamicMonth.com'
   FINAL_DIR: 'd:\web.net\IslamicMonth'
 
 on:

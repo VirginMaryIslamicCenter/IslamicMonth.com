@@ -65,11 +65,11 @@ export class LocationService {
 
   /**
    * Request browser geolocation, reverse-geocode via Nominatim, and set location.
-   * Resolves to true if location was obtained, false otherwise.
+   * Returns 'success', 'denied', or 'error'.
    */
-  async requestBrowserLocation(): Promise<boolean> {
+  async requestBrowserLocation(): Promise<'success' | 'denied' | 'error'> {
     if (typeof navigator === 'undefined' || !navigator.geolocation) {
-      return false;
+      return 'error';
     }
 
     try {
@@ -95,9 +95,13 @@ export class LocationService {
       }
 
       this.setLocation({ lat: latitude, lng: longitude, displayName });
-      return true;
-    } catch {
-      return false;
+      return 'success';
+    } catch (error: any) {
+      // GeolocationPositionError.PERMISSION_DENIED = 1
+      if (error?.code === 1) {
+        return 'denied';
+      }
+      return 'error';
     }
   }
 

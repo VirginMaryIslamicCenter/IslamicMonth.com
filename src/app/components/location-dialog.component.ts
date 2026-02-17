@@ -23,12 +23,14 @@ export class LocationDialogComponent {
     this.gettingBrowser.set(true);
     this.locationError.set(null);
 
-    const success = await this.locationService.requestBrowserLocation();
+    const result = await this.locationService.requestBrowserLocation();
     
     this.gettingBrowser.set(false);
     
-    if (success) {
+    if (result === 'success') {
       this.close.emit();
+    } else if (result === 'denied') {
+      this.locationError.set('Location permission denied. To enable: Click the location icon in your browser\'s address bar and allow location access, then try again.');
     } else {
       this.locationError.set('Browser location not available. Please search manually.');
     }
