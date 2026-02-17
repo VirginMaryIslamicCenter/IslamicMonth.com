@@ -33,13 +33,13 @@
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Angular 21 (standalone components, signals) |
-| Maps | D3.js + HTML Canvas (Natural Earth projection) |
-| Geocoding | OpenStreetMap Nominatim |
-| Styling | SCSS + Bootstrap 5 (grid only) |
-| Deploy | GitHub Actions → IIS |
+| Layer     | Technology                                     |
+| --------- | ---------------------------------------------- |
+| Framework | Angular 21 (standalone components, signals)    |
+| Maps      | D3.js + HTML Canvas (Natural Earth projection) |
+| Geocoding | OpenStreetMap Nominatim                        |
+| Styling   | SCSS + Bootstrap 5 (grid only)                 |
+| Deploy    | GitHub Actions → IIS                           |
 
 ## Getting Started
 

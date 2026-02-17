@@ -57,6 +57,24 @@ jobs:
           NODE_ENV: production
 
       # ==========================================
+      # BUILD .NET
+      # ==========================================
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Copy Angular output to wwwroot
+        run: |
+          if (Test-Path "server\wwwroot") { Remove-Item "server\wwwroot" -Recurse -Force }
+          Copy-Item -Path "dist\islamic-month\browser" -Destination "server\wwwroot" -Recurse
+
+      - name: Publish .NET project
+        run: |
+          dotnet publish server\MoonSightingMaps.csproj -c Release -o server\publish
+
+      # ==========================================
       # DEPLOY
       # ==========================================
 
@@ -121,7 +139,7 @@ jobs:
           max_attempts: 10
           retry_on: error
           command: |
-            robocopy "dist\islamic-month\browser" "${{ env.FINAL_DIR }}" /E /MT:32 /NFL /NDL /NJH /NJS /NC /NS /NP
+            robocopy "server\publish" "${{ env.FINAL_DIR }}" /E /MT:32 /NFL /NDL /NJH /NJS /NC /NS /NP
             if ($LASTEXITCODE -le 7) { exit 0 } else { exit $LASTEXITCODE }
 
       - name: REMOVE MAINTENANCE PAGE

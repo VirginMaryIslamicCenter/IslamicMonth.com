@@ -314,6 +314,47 @@
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: none;
+    padding: 16px 14px 14px;
+  }
+
+  .lv-evening {
+    font-size: 0.82rem;
+  }
+
+  .lv-location {
+    font-size: 0.82rem;
+  }
+
+  .lv-result,
+  .lv-label {
+    font-size: 0.82rem;
+  }
+
+  .lv-link {
+    font-size: 0.82rem;
+  }
+
+  .lv-sub {
+    font-size: 0.82rem;
+  }
+
+  .lv-icon,
+  .crescent-icon,
+  .location-icon {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+
+  .sighting-line {
+    font-size: 0.78rem;
+  }
+
+  .sighting-detail {
+    font-size: 0.88rem;
+  }
+
+  .sighting-action {
+    font-size: 0.88rem;
   }
 }
 
