@@ -33,6 +33,22 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   readonly visibilityGrids = signal<VisibilityGrid[]>([]);
   readonly notFound = signal(false);
 
+  /** Grids to display: stop showing after a grid where the user's location is category A */
+  readonly displayGrids = computed(() => {
+    const grids = this.visibilityGrids();
+    const loc = this.locationService.location();
+    if (!loc) return grids;
+
+    const result: VisibilityGrid[] = [];
+    for (const grid of grids) {
+      result.push(grid);
+      // If this grid is "easily visible" at user's location, no need to show later dates
+      const cat = this.getLocalCategoryForGrid(grid, loc);
+      if (cat === 'A') break;
+    }
+    return result;
+  });
+
   ngOnInit() {
     this.sub = this.route.params.subscribe((params) => {
       const year = params['year'];
@@ -128,7 +144,10 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   getLocalCategory(grid: VisibilityGrid): string {
     const loc = this.locationService.location();
     if (!loc) return 'none';
+    return this.getLocalCategoryForGrid(grid, loc);
+  }
 
+  private getLocalCategoryForGrid(grid: VisibilityGrid, loc: { lat: number; lng: number }): string {
     let nearest = grid.results[0];
     let minDist = Infinity;
     for (const r of grid.results) {

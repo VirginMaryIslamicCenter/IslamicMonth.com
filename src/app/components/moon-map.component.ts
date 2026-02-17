@@ -216,30 +216,30 @@ export class MoonMapComponent {
 
     if (grid.newMoonTime) {
       const ageHours = (grid.date.getTime() - grid.newMoonTime.getTime()) / (3600 * 1000);
-      let ageText: string;
+      let ageText: string = '';
       if (ageHours >= 0) {
         const ageDays = Math.floor(ageHours / 24);
         const ageRemainingHours = Math.floor(ageHours % 24);
-        ageText = `Moon Age: ${ageDays}d ${ageRemainingHours}h since New Moon`;
+        // ageText = `Moon Age: ${ageDays}d ${ageRemainingHours}h since New Moon`;
       } else {
         const absHours = Math.abs(ageHours);
         const h = Math.floor(absHours);
-        ageText = `New Moon occurs in ~${h}h (today)`;
+        // ageText = `New Moon occurs in ~${h}h (today)`;
       }
       ctx.fillText(ageText, this.CANVAS_WIDTH - 30, 16);
-      ctx.fillText(
-        `New Moon: ${grid.newMoonTime.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric',
-        })} ${grid.newMoonTime.toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          timeZoneName: 'short',
-        })}`,
-        this.CANVAS_WIDTH - 30,
-        40,
-      );
+      // ctx.fillText(
+      //   `New Moon: ${grid.newMoonTime.toLocaleDateString('en-US', {
+      //     month: 'short',
+      //     day: 'numeric',
+      //     year: 'numeric',
+      //   })} ${grid.newMoonTime.toLocaleTimeString('en-US', {
+      //     hour: '2-digit',
+      //     minute: '2-digit',
+      //     timeZoneName: 'short',
+      //   })}`,
+      //   this.CANVAS_WIDTH - 30,
+      //   40,
+      // );
     }
 
     // Attribution

@@ -7,13 +7,15 @@
 
     <div class="dialog-body">
       <!-- Browser Location Button -->
-      <button 
-        class="browser-location-btn" 
+      <button
+        class="browser-location-btn"
         (click)="getBrowserLocation()"
         [disabled]="gettingBrowser()"
       >
         <span class="btn-icon">📍</span>
-        <span class="btn-text">{{ gettingBrowser() ? 'Getting location...' : 'Use my current location' }}</span>
+        <span class="btn-text">{{
+          gettingBrowser() ? 'Getting location...' : 'Use my current location'
+        }}</span>
       </button>
 
       <div class="divider">
@@ -50,9 +52,9 @@
               </div>
             }
           </div>
-          <button 
-            type="submit" 
-            class="search-btn" 
+          <button
+            type="submit"
+            class="search-btn"
             [disabled]="searching() || !locationQuery.trim()"
           >
             {{ searching() ? '…' : 'Search' }}

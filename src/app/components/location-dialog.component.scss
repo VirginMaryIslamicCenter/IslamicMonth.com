@@ -45,7 +45,7 @@
   padding: 4px 8px;
   line-height: 1;
   transition: color 0.2s;
-  
+
   &:hover {
     color: #fff;
   }
@@ -70,13 +70,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  
+
   &:hover:not(:disabled) {
     background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
@@ -95,7 +95,7 @@
   display: flex;
   align-items: center;
   margin: 24px 0;
-  
+
   &::before,
   &::after {
     content: '';
@@ -143,17 +143,17 @@
   border-radius: 8px;
   color: #fff;
   font-size: 1rem;
-  
+
   &::placeholder {
     color: #546e7a;
   }
-  
+
   &:focus {
     outline: none;
     border-color: #1e88e5;
     box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -188,11 +188,11 @@
   cursor: pointer;
   transition: background 0.15s;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  
+
   &:last-child {
     border-bottom: none;
   }
-  
+
   &:hover {
     background: rgba(30, 136, 229, 0.15);
   }
@@ -221,12 +221,12 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
-  
+
   &:hover:not(:disabled) {
     background: #37474f;
     border-color: rgba(255, 255, 255, 0.2);
   }
-  
+
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;

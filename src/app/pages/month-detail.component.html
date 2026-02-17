@@ -15,54 +15,71 @@
 
 @if (visibilityGrids().length > 0) {
   <div class="container maps-section">
-    @for (grid of visibilityGrids(); track grid.date.getTime(); let i = $index) {
+    @for (grid of displayGrids(); track grid.date.getTime(); let i = $index) {
       <div class="mobile-card">
         <div class="row g-4 map-row">
-        <!-- Info column (first) -->
-        <div class="col-lg-4 col-xl-3">
-          <div class="info-card">
-            <div class="info-header">
-              <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
-              <h3 class="evening-title">Evening {{ getEveningTitle(grid.date) }}</h3>
-            </div>
-
-            <div class="info-divider"></div>
-
-            <!-- Local visibility -->
-            @if (locationService.location(); as loc) {
-              <div class="local-vis" [class]="'local-vis vis-' + getLocalCategory(grid)" (click)="locationDialogService.open()">
-                <img class="lv-icon" [src]="getLocalIcon(grid)" alt="Visibility" />
-                <div class="lv-text">
-                  <span class="lv-label">{{ loc.displayName }}</span>
-                  <span class="lv-result">{{ getLocalDescription(grid) }}</span>
+          <!-- Info column (first) -->
+          <div class="col-lg-4 col-xl-3">
+            <div class="info-card">
+              <!-- Local visibility -->
+              @if (locationService.location(); as loc) {
+                <div
+                  class="local-vis"
+                  [class]="'local-vis vis-' + getLocalCategory(grid)"
+                  (click)="locationDialogService.open()"
+                >
+                  <div class="lv-header">
+                    <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
+                    <span class="lv-evening">Evening {{ getEveningTitle(grid.date) }}</span>
+                  </div>
+                  <div class="lv-location">
+                    <img class="location-icon" src="/assets/icons/location.svg" alt="Location" /> {{ loc.displayName }}
+                  </div>
+                  <div class="lv-body">
+                    <img class="lv-icon" [src]="getLocalIcon(grid)" alt="Visibility" />
+                    <div class="lv-text">
+                      <span class="lv-result">{{ getLocalDescription(grid) }}</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            } @else {
-              <div class="local-vis vis-none" (click)="locationDialogService.open()">
-                <span class="lv-icon">📍</span>
-                <div class="lv-text">
-                  <span class="lv-link">Set your location</span>
-                  <span class="lv-sub">to see local visibility</span>
+              } @else {
+                <div class="local-vis vis-none" (click)="locationDialogService.open()">
+                  <div class="lv-header">
+                    <img class="crescent-icon" src="/assets/icons/crescent.svg" alt="Crescent" />
+                    <span class="lv-evening">Evening {{ getEveningTitle(grid.date) }}</span>
+                  </div>
+                  <div class="lv-body">
+                    <img class="lv-icon" src="/assets/icons/location.svg" alt="Location" />
+                    <div class="lv-text">
+                      <span class="lv-link">Set your location</span>
+                      <span class="lv-sub">to see local visibility</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            }
+              }
 
-            <div class="info-divider"></div>
+              @if (getLocalCategory(grid) !== 'E') {
+                <div class="info-divider"></div>
 
-            <div class="card-body">
-              <p class="sighting-line">If the moon is sighted on this evening:</p>
-              <p class="sighting-detail">
-                1st of <strong>{{ monthEntry()?.name }}</strong> begins the
-                <strong>night of {{ formatShortDate(grid.date) }}</strong>
-              </p>
-              <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+                <div class="card-body">
+                  @if (getLocalCategory(grid) === 'none') {
+                    <p class="sighting-line">If the moon is sighted on this evening:</p>
+                  } @else {
+                    <p class="sighting-line">When the moon is sighted on this evening:</p>
+                  }
+                  <p class="sighting-detail">
+                    1st of <strong>{{ monthEntry()?.name }}</strong> begins the
+                    <strong>night of {{ formatShortDate(grid.date) }}</strong>
+                  </p>
+                  <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+                </div>
+              }
             </div>
           </div>
-        </div>
-        <!-- Map column -->
-        <div class="col-lg-8 col-xl-9">
-          <app-moon-map [visibilityGrid]="grid" [userLocation]="locationService.location()" />
-        </div>
+          <!-- Map column -->
+          <div class="col-lg-8 col-xl-9">
+            <app-moon-map [visibilityGrid]="grid" [userLocation]="locationService.location()" />
+          </div>
         </div>
       </div>
     }

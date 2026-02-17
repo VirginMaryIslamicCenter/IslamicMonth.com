@@ -11,9 +11,9 @@ import { LocationService, type UserLocation } from '../services/location.service
 })
 export class LocationDialogComponent {
   private readonly locationService = inject(LocationService);
-  
+
   readonly close = output<void>();
-  
+
   locationQuery = '';
   readonly searching = signal(false);
   readonly gettingBrowser = signal(false);
@@ -28,13 +28,15 @@ export class LocationDialogComponent {
     this.locationError.set(null);
 
     const result = await this.locationService.requestBrowserLocation();
-    
+
     this.gettingBrowser.set(false);
-    
+
     if (result === 'success') {
       this.close.emit();
     } else if (result === 'denied') {
-      this.locationError.set('Location permission denied. To enable: Click the location icon in your browser\'s address bar and allow location access, then try again.');
+      this.locationError.set(
+        "Location permission denied. To enable: Click the location icon in your browser's address bar and allow location access, then try again.",
+      );
     } else {
       this.locationError.set('Browser location not available. Please search manually.');
     }
@@ -80,7 +82,7 @@ export class LocationDialogComponent {
 
   onInputChange() {
     const query = this.locationQuery.trim();
-    
+
     // Clear previous timeout
     if (this.searchTimeout) {
       clearTimeout(this.searchTimeout);

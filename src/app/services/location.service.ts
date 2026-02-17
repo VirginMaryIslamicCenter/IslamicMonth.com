@@ -55,7 +55,7 @@ export class LocationService {
     const state = iso
       ? iso.split('-').pop()!
       : address['state'] || address['province'] || address['region'] || '';
-    
+
     // If only country (no city or state), use full country name
     // Otherwise use country code abbreviation
     let country: string;
@@ -66,7 +66,7 @@ export class LocationService {
         ? address['country_code'].toUpperCase()
         : address['country'] || '';
     }
-    
+
     const parts = [city, state, country].filter(Boolean);
     return parts.length > 0 ? parts.join(', ') : fallback;
   }
