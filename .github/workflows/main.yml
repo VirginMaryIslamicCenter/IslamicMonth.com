@@ -103,43 +103,14 @@ jobs:
           Copy-Item ".github\workflows\maintenance.html" "${{ env.FINAL_DIR }}\app_offline.htm" -Force
           Write-Output "Maintenance page deployed (app_offline.htm)"
 
-      - name: CLEAR FINAL DESTINATION DIRECTORY
-        run: |
-          Write-Output "Clearing existing content from ${{ env.FINAL_DIR }} (excluding app_offline.htm)..."
-
-          # Create temporary empty directory for robocopy mirror operation
-          $tempDir = Join-Path $env:TEMP "empty_$(Get-Random)"
-          New-Item -ItemType Directory -Path $tempDir -Force | Out-Null
-
-          # Use robocopy to mirror empty directory to final destination
-          # /MIR = mirror (delete files not in source)
-          # /XF = exclude files (app_offline.htm)
-          # /MT:32 = multi-threaded for speed
-          # /R:0 = 0 retries on locked files
-          # /W:0 = 0 seconds wait between retries
-          # /NFL /NDL /NJH /NJS /NC /NS /NP = minimal logging for speed
-          robocopy $tempDir "${{ env.FINAL_DIR }}" /MIR /XF app_offline.htm /MT:32 /R:0 /W:0 /NFL /NDL /NJH /NJS /NC /NS /NP
-
-          # Clean up temp directory
-          Remove-Item $tempDir -Force -ErrorAction SilentlyContinue
-
-          # Robocopy returns 0-7 for success (8+ is error)
-          if ($LASTEXITCODE -le 7) {
-            Write-Output "Directory cleared successfully (locked files were skipped automatically)"
-            exit 0
-          } else {
-            Write-Output "Some errors occurred during cleanup, but continuing with deployment"
-            exit $LASTEXITCODE
-          }
-
-      - name: COPY FILES
+      - name: COPY FILES (differential sync — only copies changed files)
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 15
           max_attempts: 10
           retry_on: error
           command: |
-            robocopy "server\publish" "${{ env.FINAL_DIR }}" /E /MT:32 /NFL /NDL /NJH /NJS /NC /NS /NP
+            robocopy "server\publish" "${{ env.FINAL_DIR }}" /MIR /XF app_offline.htm /MT:32 /R:0 /W:0 /NFL /NDL /NJH /NJS /NC /NS /NP
             if ($LASTEXITCODE -le 7) { exit 0 } else { exit $LASTEXITCODE }
 
       - name: REMOVE MAINTENANCE PAGE
