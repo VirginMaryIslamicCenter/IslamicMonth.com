@@ -72,6 +72,24 @@
     <router-outlet />
   </main>
 
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      Built with ❤️ by the
+      <a href="https://www.virginmarycenter.org/" target="_blank" rel="noopener"
+        >Virgin Mary Islamic Center</a
+      >
+      team ·
+      <a
+        href="https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps"
+        target="_blank"
+        rel="noopener"
+        >Open Source</a
+      >
+      · MIT License
+    </div>
+  </footer>
+
   <!-- Location Dialog -->
   @if (locationDialogService.isOpen()) {
     <app-location-dialog (close)="closeLocationDialog()" />

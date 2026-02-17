@@ -1,61 +1,82 @@
-# IslamicMonth
+<p align="center">
+  <img src="public/assets/og-image.png" alt="IslamicMonth.com – Moon Sighting Visibility Maps" width="700" />
+</p>
 
-Crescent moon visibility maps for Islamic months — [IslamicMonth.com](https://islamicmonth.com)
+<h1 align="center">IslamicMonth.com</h1>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
+<p align="center">
+  Crescent moon visibility maps for every Islamic month, powered by the Yallop criterion.
+</p>
 
-## Development server
+<p align="center">
+  <a href="https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps/actions"><img src="https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps/actions/workflows/main.yml/badge.svg" alt="Deploy" /></a>
+  <a href="https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps/blob/main/LICENSE"><img src="https://img.shields.io/github/license/VirginMaryIslamicCenter/Moon-Sighting-Maps" alt="License" /></a>
+  <a href="https://angular.dev"><img src="https://img.shields.io/badge/Angular-21-DD0031?logo=angular" alt="Angular 21" /></a>
+  <a href="https://d3js.org"><img src="https://img.shields.io/badge/D3.js-7-F9A03C?logo=d3dotjs&logoColor=white" alt="D3.js" /></a>
+  <a href="https://islamicmonth.com"><img src="https://img.shields.io/website?url=https%3A%2F%2Fislamicmonth.com&label=islamicmonth.com" alt="Website" /></a>
+</p>
 
-To start a local development server, run:
+---
+
+## About
+
+**IslamicMonth.com** generates interactive world maps showing where the new crescent moon can be sighted on the evening of each Islamic month. Visibility zones are calculated using the **Yallop criterion** and rendered with D3.js on HTML Canvas.
+
+### Features
+
+- **Visibility maps** for every month of the current Islamic year
+- **Five visibility categories** — from easily naked-eye visible to not visible
+- **Location-aware** — detects your city via browser geolocation or manual search
+- **Local sighting info** — shows your personal visibility category and description
+- **Responsive** — mobile-first layout with interactive cards
+- **Fast** — pure Canvas rendering, ~120 kB gzipped
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Angular 21 (standalone components, signals) |
+| Maps | D3.js + HTML Canvas (Natural Earth projection) |
+| Geocoding | OpenStreetMap Nominatim |
+| Styling | SCSS + Bootstrap 5 (grid only) |
+| Deploy | GitHub Actions → IIS |
+
+## Getting Started
 
 ```bash
+# Clone
+git clone https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps.git
+cd Moon-Sighting-Maps
+
+# Install
+npm install
+
+# Dev server (http://localhost:4200)
 ng serve
-```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
+# Production build
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Project Structure
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
+```
+src/
+├── app/
+│   ├── components/       # Moon map canvas component
+│   ├── pages/            # Home shell & month detail page
+│   ├── services/         # Location, moon-data, geocoding services
+│   └── models/           # TypeScript interfaces
+├── assets/               # Icons, OG image, favicon
+└── index.html
 ```
 
-## Running end-to-end tests
+## License
 
-For end-to-end (e2e) testing, run:
+[MIT](LICENSE) © IslamicMonth.com
 
-```bash
-ng e2e
-```
+---
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+<p align="center">
+  Built with ❤️ by the <a href="https://github.com/VirginMaryIslamicCenter">Virgin Mary Islamic Center</a> team
+</p>
