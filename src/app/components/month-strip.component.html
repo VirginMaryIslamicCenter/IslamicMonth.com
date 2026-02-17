@@ -1,0 +1,33 @@
+<nav class="month-strip">
+  <div class="container">
+    <div class="strip-inner">
+      <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">
+        ‹
+      </button>
+      <div
+        class="strip-track"
+        #monthTrack
+        (mousedown)="onDragStart($event)"
+        (touchstart)="onDragStart($event)"
+      >
+        @for (month of months(); track month.newMoonDate.getTime()) {
+          <a
+            class="month-box"
+            [routerLink]="['/', month.year + 'AH', month.routeSlug]"
+            routerLinkActive="active"
+          >
+            @if (month.name === 'Shawwal') {
+              <span class="eid-badge fitr">🎆 Eid al-Fitr!</span>
+            }
+            <span class="mb-name">{{ month.name }}</span>
+            <span class="mb-meta">{{ month.year }} AH</span>
+            <span class="mb-greg">{{ month.gregorianLabel }}</span>
+          </a>
+        }
+      </div>
+      <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">
+        ›
+      </button>
+    </div>
+  </div>
+</nav>

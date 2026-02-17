@@ -66,13 +66,13 @@ jobs:
           npm run build
         env:
           NODE_ENV: production
-          NG_BUILD_CACHE: "true"
+          NG_BUILD_CACHE: 'true'
 
       # ==========================================
       # BUILD .NET
       # ==========================================
 
-      - name: "Check if .NET 9 is installed globally"
+      - name: 'Check if .NET 9 is installed globally'
         id: check-dotnet
         shell: powershell
         run: |
@@ -98,7 +98,7 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: "Configure persistent NuGet cache directory"
+      - name: 'Configure persistent NuGet cache directory'
         shell: powershell
         run: |
           $nugetCacheDir = "D:\nuget-cache"
@@ -119,8 +119,8 @@ jobs:
         run: |
           dotnet publish server\MoonSightingMaps.csproj -c Release -o server\publish -p:EnableNETAnalyzers=false -p:RunAnalyzersDuringBuild=false -p:GenerateDocumentationFile=false /maxcpucount /p:BuildInParallel=true
         env:
-          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: "true"
-          DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+          DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+          DOTNET_CLI_TELEMETRY_OPTOUT: 'true'
 
       # ==========================================
       # DEPLOY

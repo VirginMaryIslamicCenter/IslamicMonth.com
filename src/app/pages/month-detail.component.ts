@@ -9,12 +9,12 @@ import {
   IslamicMonthEntry,
 } from '../services/islamic-month.service';
 import { LocationService } from '../services/location.service';
-import { LocationDialogService } from '../services/location-dialog.service';
 import { MoonMapComponent } from '../components/moon-map.component';
+import { InfoCardComponent } from '../components/info-card.component';
 
 @Component({
   selector: 'app-month-detail',
-  imports: [CommonModule, MoonMapComponent],
+  imports: [CommonModule, MoonMapComponent, InfoCardComponent],
   templateUrl: './month-detail.component.html',
   styleUrl: './month-detail.component.scss',
 })
@@ -23,7 +23,6 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly moonService = inject(IslamicMonthService);
   readonly locationService = inject(LocationService);
-  readonly locationDialogService = inject(LocationDialogService);
   private sub!: Subscription;
 
   readonly monthEntry = signal<IslamicMonthEntry | null>(null);
@@ -192,37 +191,5 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
       }
     }
     return nearest?.category ?? 'E';
-  }
-
-  getLocalIcon(grid: VisibilityGrid): string {
-    const cat = this.getLocalCategory(grid);
-    switch (cat) {
-      case 'A':
-        return '/assets/icons/easily-visible.svg';
-      case 'B':
-        return '/assets/icons/visible-conditions.svg';
-      case 'C':
-        return '/assets/icons/optical-aid.svg';
-      case 'D':
-        return '/assets/icons/optical-aid.svg';
-      default:
-        return '/assets/icons/not-visible.svg';
-    }
-  }
-
-  getLocalDescription(grid: VisibilityGrid): string {
-    const cat = this.getLocalCategory(grid);
-    switch (cat) {
-      case 'A':
-        return 'Easily visible with the naked eye';
-      case 'B':
-        return 'Visible with the naked eye in perfect conditions';
-      case 'C':
-        return 'Need optical aid (binoculars) to find, then visible with naked eye';
-      case 'D':
-        return 'Only visible with optical aid (telescope / binoculars)';
-      default:
-        return 'Moon not visible';
-    }
   }
 }

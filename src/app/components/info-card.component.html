@@ -1,0 +1,49 @@
+<div class="info-card">
+  <!-- Local visibility -->
+  @if (locationService.location(); as loc) {
+    <div
+      class="local-vis"
+      [class]="'local-vis vis-' + getLocalCategory()"
+      (click)="locationDialogService.open()"
+    >
+      <div class="lv-location">
+        <img class="location-icon" src="/assets/icons/location.svg" alt="Location" />
+        {{ loc.displayName }}
+      </div>
+      <div class="lv-body">
+        <img class="lv-icon" [src]="getLocalIcon()" alt="Visibility" />
+        <div class="lv-text">
+          <span class="lv-result">{{ getLocalDescription() }}</span>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="local-vis vis-none" (click)="locationDialogService.open()">
+      <div class="lv-body">
+        <img class="lv-icon" src="/assets/icons/location.svg" alt="Location" />
+        <div class="lv-text">
+          <span class="lv-link">Set your location</span>
+          <span class="lv-sub">to see local visibility</span>
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (getLocalCategory() !== 'E') {
+    <div class="info-divider"></div>
+
+    <div class="card-body">
+      <p class="sighting-line">If the believers sight the moon on this evening:</p>
+      <p class="sighting-detail">
+        1st of <strong>{{ monthName() }}</strong> begins the
+        <strong>night of {{ sightingDate() }}</strong>
+      </p>
+      <p class="sighting-action">{{ actionLine() }}</p>
+      @for (special of specialDates(); track special.label) {
+        <p class="sighting-special">
+          <strong>{{ special.label }}:</strong> {{ special.date }}
+        </p>
+      }
+    </div>
+  }
+</div>

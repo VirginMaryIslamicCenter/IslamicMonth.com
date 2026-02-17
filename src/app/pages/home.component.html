@@ -1,104 +1,14 @@
 <div class="shell">
-  <!-- Top header bar -->
-  <header class="top-bar">
-    <div class="container">
-      <div class="top-bar-inner">
-        <div class="top-left">
-          <img class="brand-logo" src="/assets/icons/logo.svg" alt="IslamicMonth" />
-        </div>
-        <div class="top-right" id="sidebar-top">
-          <img
-            class="loc-label d-none d-md-inline"
-            src="/assets/icons/location.svg"
-            alt="Location"
-          />
-          @if (locationService.location(); as loc) {
-            <div class="location-display">
-              <span class="location-name">{{ loc.displayName }}</span>
-              <button
-                class="location-change"
-                (click)="openLocationDialog()"
-                title="Change location"
-              >
-                <span class="change-text">Change</span>
-                <img class="change-icon" src="/assets/icons/edit.svg" alt="Change" />
-              </button>
-            </div>
-          } @else {
-            <button class="set-location-btn" (click)="openLocationDialog()">Set Location</button>
-          }
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- Info banner -->
-  <div class="info-banner mb-4">
-    <div class="container info-banner-container">
-      <img class="info-banner-bg" src="/assets/header-image.png" alt="" />
-      <div class="info-banner-inner">
-        <span class="info-banner-text">Predicting Moon Sightings with Precision</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Horizontal scrollable month strip -->
-  <nav class="month-strip">
-    <div class="container">
-      <div class="strip-inner">
-        <button class="strip-arrow left" (click)="scrollMonths(-1)" aria-label="Scroll left">
-          ‹
-        </button>
-        <div
-          class="strip-track"
-          #monthTrack
-          (mousedown)="onDragStart($event)"
-          (touchstart)="onDragStart($event)"
-        >
-          @for (month of islamicMonths(); track month.newMoonDate.getTime()) {
-            <a
-              class="month-box"
-              [routerLink]="['/', month.year + 'AH', month.routeSlug]"
-              routerLinkActive="active"
-            >
-              @if (month.name === 'Shawwal') {
-                <span class="eid-badge fitr">🎆 Eid al-Fitr!</span>
-              }
-              <span class="mb-name">{{ month.name }}</span>
-              <span class="mb-meta">{{ month.year }} AH</span>
-              <span class="mb-greg">{{ month.gregorianLabel }}</span>
-            </a>
-          }
-        </div>
-        <button class="strip-arrow right" (click)="scrollMonths(1)" aria-label="Scroll right">
-          ›
-        </button>
-      </div>
-    </div>
-  </nav>
+  <app-topbar />
+  <app-header-message />
+  <app-month-strip [months]="islamicMonths()" />
 
   <!-- Main content area -->
   <main class="content">
     <router-outlet />
   </main>
 
-  <!-- Footer -->
-  <footer class="site-footer">
-    <div class="container">
-      Built with ❤️ by the
-      <a href="https://www.virginmarycenter.org/" target="_blank" rel="noopener"
-        >Virgin Mary Islamic Center</a
-      >
-      team ·
-      <a
-        href="https://github.com/VirginMaryIslamicCenter/Moon-Sighting-Maps"
-        target="_blank"
-        rel="noopener"
-        >Open Source</a
-      >
-      · MIT License
-    </div>
-  </footer>
+  <app-footer />
 
   <!-- Location Dialog -->
   @if (locationDialogService.isOpen()) {
