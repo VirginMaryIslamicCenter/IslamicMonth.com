@@ -123,6 +123,17 @@
   font-weight: 600;
   color: #80ff84;
 }
+.sighting-special {
+  margin: 6px 0 0;
+  font-size: 1.15rem;
+  color: #b0bec5;
+  line-height: 1.5;
+
+  strong {
+    color: #ffca28;
+    font-weight: 600;
+  }
+}
 
 /* ---- Local visibility ---- */
 .local-vis {
@@ -383,6 +394,10 @@
 
   .sighting-action {
     font-size: 0.88rem;
+  }
+
+  .sighting-special {
+    font-size: 0.82rem;
   }
 }
 

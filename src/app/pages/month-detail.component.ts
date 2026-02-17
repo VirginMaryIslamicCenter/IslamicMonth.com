@@ -141,6 +141,39 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
     return `Day of ${dayStr}`;
   }
 
+  getSpecialDates(mapDate: Date): { label: string; date: string }[] {
+    const entry = this.monthEntry();
+    if (!entry) return [];
+
+    const firstDay = new Date(mapDate);
+    firstDay.setDate(firstDay.getDate() + 1);
+
+    const formatDate = (d: Date) =>
+      d.toLocaleDateString('en-US', {
+        weekday: 'long',
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
+    if (entry.name === 'Muharram') {
+      const ashura = new Date(firstDay);
+      ashura.setDate(ashura.getDate() + 9);
+      const ashuraNight = new Date(firstDay);
+      ashuraNight.setDate(ashuraNight.getDate() + 8);
+
+      const arbaeen = new Date(firstDay);
+      arbaeen.setDate(arbaeen.getDate() + 49);
+      return [
+        { label: 'Night of Ashura', date: formatDate(ashuraNight) },
+        { label: 'Day of Ashura (10th of Muharram)', date: formatDate(ashura) },
+        { label: 'Day of Arbaeen (20th of Safar)', date: formatDate(arbaeen) },
+      ];
+    }
+
+    return [];
+  }
+
   /** Find the nearest grid point to the user's location and return its category. */
   getLocalCategory(grid: VisibilityGrid): string {
     const loc = this.locationService.location();

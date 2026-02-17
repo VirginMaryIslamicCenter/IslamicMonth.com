@@ -69,6 +69,11 @@
                     <strong>night of {{ formatShortDate(grid.date) }}</strong>
                   </p>
                   <p class="sighting-action">{{ getActionLine(grid.date) }}</p>
+                  @for (special of getSpecialDates(grid.date); track special.label) {
+                    <p class="sighting-special">
+                      <strong>{{ special.label }}:</strong> {{ special.date }}
+                    </p>
+                  }
                 </div>
               }
             </div>
