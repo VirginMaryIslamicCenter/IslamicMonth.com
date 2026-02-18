@@ -92,12 +92,12 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
       this.computingStep.set(i + 1);
       await new Promise<void>((resolve) => {
         setTimeout(() => {
-          const grid = this.moonService.calculateVisibilityGrid(entry.mapDates[i], 'waxing', 4);
+          const grid = this.moonService.calculateVisibilityGrid(entry.mapDates[i], 'waxing', 2);
           grid.dayLabel = dayLabels[i];
           grid.islamicMonthLabel = `${entry.name} ${entry.year} AH`;
           grids.push(grid);
           resolve();
-        }, 30);
+        }, 0);
       });
     }
 

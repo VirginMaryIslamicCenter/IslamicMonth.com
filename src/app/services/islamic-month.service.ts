@@ -352,21 +352,20 @@ export class IslamicMonthService {
   /**
    * Calculate moon visibility across the globe for a given date.
    *
-   * Uses the Yallop (1997) criterion with proper "best time" calculation.
-   * Best time is determined using the 4/9 lag rule:
-   *   - Waxing: t_best = t_sunset + (4/9) × (t_moonset − t_sunset)
-   *   - Waning: t_best = t_sunrise − (4/9) × (t_sunrise − t_moonrise)
-   * Fallback: SearchAltitude for sun at −4° depression angle.
+   * Uses the Yallop (1997) criterion evaluated when the sun is at −1° below the horizon.
+   * This is shortly after sunset/before sunrise and provides adequate twilight for observation.
+   *
+   * Thresholds have been relaxed for better coverage of marginal visibility (especially optical aid):
    *
    * Yallop's q criterion:
    *   q = (ARCV − (11.8371 − 6.3226·W + 0.7319·W² − 0.1018·W³)) / 10
    *
-   * Categories:
-   *   A: q > +0.216  → Easily visible with naked eye
-   *   B: −0.014 < q ≤ +0.216 → Visible under perfect conditions
-   *   C: −0.160 < q ≤ −0.014 → May need optical aid to find, then naked eye
-   *   D: −0.232 < q ≤ −0.160 → Visible only with optical aid
-   *   E: q ≤ −0.232 → Not visible
+   * Categories (relaxed thresholds for better coverage):
+   *   A: q > +0.10  → Easily visible with naked eye (expanded threshold)
+   *   B: −0.19 < q ≤ +0.10 → Visible under perfect conditions (expanded threshold)
+   *   C: −0.35 < q ≤ −0.19 → May need optical aid to find, then naked eye (expanded threshold)
+   *   D: −0.68 < q ≤ −0.35 → Visible only with optical aid (expanded threshold)
+   *   E: q ≤ −0.68 → Not visible
    */
   calculateVisibilityGrid(
     date: Date,
@@ -376,9 +375,11 @@ export class IslamicMonthService {
     const results: MoonVisibilityResult[] = [];
     const newMoonTime = this.findPreviousNewMoon(date);
     const nextNewMoonTime = this.findNextNewMoon(date);
+    const latEnd = 65;
+    const lngEnd = 180;
 
-    for (let lat = -65; lat <= 65; lat += resolution) {
-      for (let lng = -180; lng <= 180; lng += resolution) {
+    for (let lat = -65; lat <= latEnd; lat += resolution) {
+      for (let lng = -180; lng <= lngEnd; lng += resolution) {
         const result = this.calculateVisibilityAtPoint(
           lat,
           lng,
@@ -446,7 +447,8 @@ export class IslamicMonthService {
 
   /**
    * Evening observation for waxing crescent (after sunset).
-   * Best time = sunset + 4/9 × (moonset − sunset).
+   * Observation time is when the sun is at −1° below the horizon.
+   * This provides more observation time after sunset for visibility assessment.
    */
   private calculateWaxingVisibility(
     observer: Observer,
@@ -460,37 +462,21 @@ export class IslamicMonthService {
   ): MoonVisibilityResult {
     const noonUTC = new Date(Date.UTC(year, month, day, 12 - localOffset, 0, 0));
 
-    // Find sunset
+    // Find sunset (sun's upper limb at horizon with refraction)
     const sunset = SearchRiseSet(Body.Sun, observer, -1, noonUTC, 1);
     if (!sunset) return this.emptyResult(lat, lng);
 
-    // Find moonset after sunset for the 4/9 lag rule
-    const moonset = SearchRiseSet(Body.Moon, observer, -1, sunset, 0.5);
-
-    let bestTimeAstro: AstroTime;
-    if (moonset && moonset.date.getTime() > sunset.date.getTime()) {
-      const lag = moonset.date.getTime() - sunset.date.getTime();
-      // If lag is unreasonably large (>6 hours), clamp it
-      const effectiveLag = Math.min(lag, 6 * 3600 * 1000);
-      const bestMs = sunset.date.getTime() + (4 / 9) * effectiveLag;
-      bestTimeAstro = MakeTime(new Date(bestMs));
-    } else {
-      // Moon already set before sunset or no moonset found → not visible
-      // But try fallback: sun at −4° depression
-      const fallback = SearchAltitude(Body.Sun, observer, -1, sunset, 0.1, -4.0);
-      if (fallback) {
-        bestTimeAstro = fallback;
-      } else {
-        return this.emptyResult(lat, lng);
-      }
-    }
+    // Find the time when sun is at −1° below horizon
+    // This is shortly after sunset and provides more observation time
+    const observationTime = SearchAltitude(Body.Sun, observer, -1, sunset, 1.0, -1.0);
+    if (!observationTime) return this.emptyResult(lat, lng);
 
     return this.computeVisibility(
       observer,
       lat,
       lng,
-      bestTimeAstro,
-      sunset.date,
+      observationTime,
+      observationTime.date,
       newMoonTime,
       'waxing',
     );
@@ -498,7 +484,8 @@ export class IslamicMonthService {
 
   /**
    * Morning observation for waning crescent (before sunrise).
-   * Best time = sunrise − 4/9 × (sunrise − moonrise).
+   * Observation time is when the sun is at −1° below the horizon.
+   * This provides more observation time before sunrise.
    */
   private calculateWaningVisibility(
     observer: Observer,
@@ -512,45 +499,31 @@ export class IslamicMonthService {
   ): MoonVisibilityResult {
     const midnightUTC = new Date(Date.UTC(year, month, day, 0 - localOffset, 0, 0));
 
-    // Find sunrise
+    // Find sunrise (sun's upper limb at horizon with refraction)
     const sunrise = SearchRiseSet(Body.Sun, observer, +1, midnightUTC, 1);
     if (!sunrise) return this.emptyResult(lat, lng);
 
-    // Find moonrise before sunrise for the 4/9 lag rule
-    // Search from several hours before sunrise
-    const searchStart = new Date(sunrise.date.getTime() - 12 * 3600 * 1000);
-    const moonrise = SearchRiseSet(Body.Moon, observer, +1, searchStart, 0.75);
-
-    let bestTimeAstro: AstroTime;
-    if (moonrise && moonrise.date.getTime() < sunrise.date.getTime()) {
-      const lag = sunrise.date.getTime() - moonrise.date.getTime();
-      const effectiveLag = Math.min(lag, 6 * 3600 * 1000);
-      const bestMs = sunrise.date.getTime() - (4 / 9) * effectiveLag;
-      bestTimeAstro = MakeTime(new Date(bestMs));
-    } else {
-      // Moon rises after sunrise or no moonrise found → try fallback
-      const searchFallbackStart = new Date(sunrise.date.getTime() - 2 * 3600 * 1000);
-      const fallback = SearchAltitude(Body.Sun, observer, +1, searchFallbackStart, 0.2, -4.0);
-      if (fallback) {
-        bestTimeAstro = fallback;
-      } else {
-        return this.emptyResult(lat, lng);
-      }
-    }
+    // Find the time when sun is at −1° below horizon before sunrise
+    // This provides more observation time
+    const searchStart = new Date(sunrise.date.getTime() - 2 * 3600 * 1000);
+    const observationTime = SearchAltitude(Body.Sun, observer, +1, searchStart, 2.0, -1.0);
+    if (!observationTime) return this.emptyResult(lat, lng);
 
     return this.computeVisibility(
       observer,
       lat,
       lng,
-      bestTimeAstro,
-      sunrise.date,
+      observationTime,
+      observationTime.date,
       nextNewMoonTime,
       'waning',
     );
   }
 
   /**
-   * Core visibility computation at the determined "best time".
+   * Core visibility computation at sunset/sunrise.
+   * Calculates the Yallop criterion (q value) based on moon's position
+   * at the observation time.
    */
   private computeVisibility(
     observer: Observer,
@@ -587,11 +560,11 @@ export class IslamicMonthService {
       };
     }
 
-    // Geocentric elongation (ARCL)
+    // Geocentric elongation (ARCL) for crescent width calculation
     const elongation = AngleFromSun(Body.Moon, bestTimeAstro);
 
     // Topocentric crescent width W in arc-minutes
-    // W = SD_moon × (1 − cos(ARCL))
+    // W = SD_moon × (1 − cos(ARCL))  where ARCL is geocentric elongation
     const moonIllum = Illumination(Body.Moon, bestTimeAstro);
     const moonDistAU = moonIllum.geo_dist;
     const moonRadiusAU = 1737.4 / 149597870.7;
@@ -610,13 +583,13 @@ export class IslamicMonthService {
       10;
 
     let category: VisibilityCategory;
-    if (q > 0.216) {
+    if (q > 0.1) {
       category = VisibilityCategory.EASILY_VISIBLE;
-    } else if (q > -0.014) {
+    } else if (q > -0.19) {
       category = VisibilityCategory.VISIBLE_PERFECT_CONDITIONS;
-    } else if (q > -0.16) {
+    } else if (q > -0.36) {
       category = VisibilityCategory.OPTICAL_AID_TO_FIND;
-    } else if (q > -0.232) {
+    } else if (q > -0.63) {
       category = VisibilityCategory.OPTICAL_AID_ONLY;
     } else {
       category = VisibilityCategory.NOT_VISIBLE;
