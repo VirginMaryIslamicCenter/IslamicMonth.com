@@ -1,0 +1,29 @@
+<nav class="year-strip">
+  <div class="container">
+    <div class="strip-inner">
+      <button class="strip-arrow left" (click)="scrollYears(-1)" aria-label="Scroll left">
+        ‹
+      </button>
+      <div
+        class="strip-track"
+        #yearTrack
+        (mousedown)="onDragStart($event)"
+        (touchstart)="onDragStart($event)"
+      >
+        @for (year of years(); track year.gregorianYear) {
+          <a
+            class="year-box"
+            [class.active]="year.gregorianYear === activeYear()"
+            [routerLink]="year.firstMonthRoute"
+          >
+            <span class="year-greg">{{ year.gregorianYear }}</span>
+            <span class="year-hijri">{{ year.islamicYearLabel }}</span>
+          </a>
+        }
+      </div>
+      <button class="strip-arrow right" (click)="scrollYears(1)" aria-label="Scroll right">
+        ›
+      </button>
+    </div>
+  </div>
+</nav>

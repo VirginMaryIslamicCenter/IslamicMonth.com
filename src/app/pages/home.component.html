@@ -1,6 +1,7 @@
 <div class="shell">
   <app-topbar />
   <app-header-message />
+  <app-year-strip [years]="yearEntries()" [activeYear]="activeGregorianYear()" />
   <app-month-strip [months]="islamicMonths()" />
 
   <!-- Main content area -->

@@ -65,15 +65,22 @@ export class MonthDetailComponent implements OnInit, OnDestroy {
     this.visibilityGrids.set([]);
     this.notFound.set(false);
 
-    const months = this.moonService.getUpcomingIslamicMonths(new Date(), 12);
-    const entry = this.moonService.findMonthByRoute(yearStr, monthSlug, months);
+    // Search across a wide range of years to support year navigation
+    const currentYear = new Date().getFullYear();
+    let entry: IslamicMonthEntry | undefined;
+    for (let y = currentYear - 5; y <= currentYear + 5; y++) {
+      const months = this.moonService.getIslamicMonthsForGregorianYear(y);
+      entry = this.moonService.findMonthByRoute(yearStr, monthSlug, months);
+      if (entry) break;
+    }
 
     if (!entry) {
       this.notFound.set(true);
       this.computing.set(false);
       // Redirect after a short delay
+      const fallbackMonths = this.moonService.getUpcomingIslamicMonths(new Date(), 12);
       setTimeout(() => {
-        const fallback = this.moonService.getNearestMonthRoute(months);
+        const fallback = this.moonService.getNearestMonthRoute(fallbackMonths);
         this.router.navigateByUrl(fallback);
       }, 1500);
       return;

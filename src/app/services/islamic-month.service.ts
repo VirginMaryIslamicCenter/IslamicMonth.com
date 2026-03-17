@@ -172,6 +172,16 @@ export class IslamicMonthService {
   }
 
   /**
+   * Generate Islamic months whose new moon falls in a specific Gregorian year.
+   */
+  getIslamicMonthsForGregorianYear(year: number): IslamicMonthEntry[] {
+    // Start from December of previous year to catch late-December new moons
+    const fromDate = new Date(year - 1, 11, 1);
+    const months = this.getUpcomingIslamicMonths(fromDate, 16);
+    return months.filter((m) => m.newMoonDate.getFullYear() === year);
+  }
+
+  /**
    * Convert Islamic month name to a URL-safe slug.
    */
   toRouteSlug(name: string): string {
