@@ -109,8 +109,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     for (const ye of this.yearEntries()) {
       const months = this.getMonthsForYear(ye.gregorianYear);
       const match = months.find(
-        (m) =>
-          `${m.year}AH` === yearStr && m.routeSlug.toLowerCase() === monthSlug.toLowerCase(),
+        (m) => `${m.year}AH` === yearStr && m.routeSlug.toLowerCase() === monthSlug.toLowerCase(),
       );
       if (match) {
         this.activeGregorianYear.set(ye.gregorianYear);
